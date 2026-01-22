@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T15:14:47+09:00",
+    "title": "Persistent DaaSの利点と必要性",
+    "summary": "自治体や高セキュリティ環境で選ばれるPersistent DaaSのメリットとその必要性について解説します。業務効率やセキュリティ側面からの利点がポイントです。",
+    "tags": [
+      "DaaS",
+      "自治体",
+      "仮想デスクトップ",
+      "業務効率",
+      "ネットワーク分離"
+    ],
+    "dir": "2026-01-22_persistent-daas-benefits",
+    "repo_path": "/docs/2026-01-22_persistent-daas-benefits/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_persistent-daas-benefits"
+  },
+  {
     "timestamp": "2026-01-22T15:06:16+09:00",
     "title": "DaaSのランタイムの違いを比較",
     "summary": "DaaSにおける永続型と非永続型のアーキテクチャの違いを解説します。各方式のメリット・デメリットも紹介。",

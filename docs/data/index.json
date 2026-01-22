@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T15:58:37+09:00",
+    "title": "リスク優先順位付けの考え方",
+    "summary": "リスク評価とは、発生確率と影響度を使い、リスクの優先順位を付ける手法です。具体例を通じて理解を深めることが重要です。",
+    "tags": [
+      "リスク管理",
+      "優先順位",
+      "リスクマトリクス",
+      "ITパスポート",
+      "試験対策"
+    ],
+    "dir": "2026-01-22_risk-prioritization",
+    "repo_path": "/docs/2026-01-22_risk-prioritization/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_risk-prioritization"
+  },
+  {
     "timestamp": "2026-01-22T15:14:47+09:00",
     "title": "Persistent DaaSの利点と必要性",
     "summary": "自治体や高セキュリティ環境で選ばれるPersistent DaaSのメリットとその必要性について解説します。業務効率やセキュリティ側面からの利点がポイントです。",

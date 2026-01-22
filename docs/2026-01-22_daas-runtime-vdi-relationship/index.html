@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>DaaSにおけるランタイムの理解：VDIとの関係性を完全図解 - Sidenote</title>
+  <meta name="description" content="DaaS/VDIにおける「ランタイム」とは何か？インフラ（箱）と実行環境（中身）の違い、永続型と非永続型の違いなどを、階層構造図を用いて分かりやすく解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="DaaSにおけるランタイムの理解：VDIとの関係性を完全図解" />
+  <meta property="og:description" content="VDIは「家」、ランタイムは「生活環境」。この違いが分かればDaaSの本質が見えてくる。" />
+  <meta property="og:url" content="https://example.com/articles/daas-runtime-vdi.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 階層構造図：VDIとランタイムの関係 */
+    .stack-diagram-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .layer-box {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border: 2px solid var(--text-main);
+      font-weight: bold;
+      background: var(--bg-color);
+      position: relative;
+    }
+
+    /* インフラ層（下） */
+    .layer-infra {
+      background: #cfd8dc; /* Gray Blue */
+      border-color: #607d8b;
+      color: #37474f;
+    }
+
+    /* 仮想化層（中） */
+    .layer-vdi {
+      background: #bbdefb; /* Blue 100 */
+      border-color: #1976d2;
+      color: #0d47a1;
+    }
+
+    /* VM層（分岐） */
+    .vm-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 550px;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .vm-box {
+      flex: 1;
+      border: 2px dashed #1976d2;
+      padding: 1rem;
+      background: #e3f2fd;
+      position: relative;
+    }
+    
+    .vm-label {
+      font-size: 0.8rem;
+      color: #0d47a1;
+      margin-bottom: 0.5rem;
+      display: block;
+      font-weight: bold;
+    }
+
+    /* ランタイム層（VMの中身） */
+    .layer-runtime {
+      background: #ffecb3; /* Amber 100 */
+      border: 2px solid #ffa000;
+      color: #ff6f00;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+    }
+
+    /* ユーザー操作（一番上） */
+    .user-action {
+      margin-bottom: 1rem; /* 逆順にするのでbottomが上になる */
+      text-align: center;
+      font-weight: bold;
+    }
+    .arrow-down {
+      font-size: 1.5rem;
+      color: var(--text-main);
+      margin: 0.5rem 0;
+    }
+
+    /* 比較カード：永続型 vs 非永続型 */
+    .type-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 600px) {
+      .type-comparison { grid-template-columns: 1fr; }
+    }
+
+    .type-card {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 1.5rem;
+    }
+
+    .type-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: block;
+      border-bottom: 2px solid var(--code-bg);
+      padding-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+    .feature-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .feature-list li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    /* アナロジーBOX */
+    .analogy-box {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      border-left: 5px solid var(--text-main);
+      margin: 2rem 0;
+    }
+    .analogy-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / インフラ・クラウド</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">DaaSにおけるランタイムの理解：VDIとの関係性を完全図解</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#DaaS</li>
+            <li>#VDI</li>
+            <li>#ランタイム</li>
+            <li>#クラウド</li>
+            <li>#仮想デスクトップ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「DaaS（Desktop as a Service）」の話をしていると、「ランタイム」という言葉が出てきて混乱することがあります。通常、プログラミングで使われる言葉ですが、DaaS/VDIの世界では少し違うニュアンスで使われます。</p>
+        <p>この記事では、DaaSにおけるランタイムの定義と、VDI（仮想デスクトップ基盤）との関係性を、家の構造に例えて分かりやすく解説します。</p>
+
+        <h2>1. そもそもランタイムとは？</h2>
+        <p>IT全般において、ランタイム（Runtime）とは「実行時」や「実行環境」を指します。</p>
+        <ul>
+            <li><strong>プログラミングでは：</strong>Java VMや.NET CLRなど、コードを動かすためのエンジンのこと。</li>
+            <li><strong>DaaS/VDIでは：</strong>ユーザーが利用するアプリやOSが実際に動作している<strong>「仮想デスクトップの中身（環境全体）」</strong>のこと。</li>
+        </ul>
+
+        <h2>2. VDIとランタイムの関係図</h2>
+        <p>VDIは「箱（インフラ）」であり、ランタイムはその中で動く「生活環境」です。以下の図のように、積み上げ構造で理解するとクリアになります。</p>
+
+        <div class="stack-diagram-container">
+            <div class="user-action">
+                👩‍💻 ユーザー操作
+                <div class="arrow-down">↓</div>
+            </div>
+
+            <!-- VM層（ランタイム） -->
+            <div class="vm-container">
+                <div class="vm-box">
+                    <span class="vm-label">仮想マシン A (User 1)</span>
+                    <div class="layer-runtime">
+                        <strong>ランタイム</strong><br>
+                        OS + アプリ + ライブラリ<br>
+                        <small>（実際に操作する環境）</small>
+                    </div>
+                </div>
+                <div class="vm-box">
+                    <span class="vm-label">仮想マシン B (User 2)</span>
+                    <div class="layer-runtime">
+                        <strong>ランタイム</strong><br>
+                        OS + アプリ + ライブラリ<br>
+                        <small>（実際に操作する環境）</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow-down">↑</div>
+
+            <!-- VDI層 -->
+            <div class="layer-box layer-vdi">
+                VDI (Hypervisor / 仮想化基盤)<br>
+                <small>仮想マシンを作成・割当・管理する</small>
+            </div>
+
+            <div class="arrow-down">↑</div>
+
+            <!-- 物理層 -->
+            <div class="layer-box layer-infra">
+                物理サーバー / クラウド基盤<br>
+                <small>CPU / メモリ / ストレージ</small>
+            </div>
+        </div>
+
+        <div class="analogy-box">
+            <span class="analogy-title">🏠 家に例えると？</span>
+            <ul>
+                <li><strong>VDI (基盤)：</strong> マンションの建物そのもの。部屋（VM）を区切って提供する。</li>
+                <li><strong>ランタイム：</strong> 部屋の中にある家具・水道・電気・生活用品。これがあって初めて「生活（アプリ利用）」ができる。</li>
+            </ul>
+        </div>
+
+        <h2>3. 2種類のVDIとランタイム</h2>
+        <p>この「部屋（ランタイム）」の使い回し方によって、VDIには2つのタイプがあります。</p>
+
+        <div class="type-comparison">
+            <div class="type-card">
+                <span class="type-title">① 永続型 (Persistent)</span>
+                <p style="font-size:0.9rem; margin-bottom:1rem; color:var(--text-sub);">
+                    「マイホーム」タイプ。一度割り当てられたら、ずっとその人のもの。
+                </p>
+                <ul class="feature-list">
+                    <li>ユーザーごとに専用のVMがある</li>
+                    <li>アプリや壁紙などの設定変更が保存される</li>
+                    <li><strong>ランタイム：</strong>個別にカスタマイズ可能</li>
+                </ul>
+            </div>
+
+            <div class="type-card">
+                <span class="type-title">② 非永続型 (Non-persistent)</span>
+                <p style="font-size:0.9rem; margin-bottom:1rem; color:var(--text-sub);">
+                    「ホテル」タイプ。使うたびに部屋がリセットされる。
+                </p>
+                <ul class="feature-list">
+                    <li>ログオフするとVMは初期状態に戻る</li>
+                    <li>常にクリーンな環境を利用できる</li>
+                    <li><strong>ランタイム：</strong>全員で標準環境を共有（管理が楽）</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>4. DaaSにおけるメリット</h2>
+        <p>DaaS（Desktop as a Service）は、上記のVDI基盤とランタイムの管理をクラウド事業者が肩代わりしてくれるサービスです。</p>
+        <p>オンプレミスでVDIを構築する場合、下の「物理層」や「VDI層」のアップデート作業に追われますが、DaaSならユーザーは「ランタイム（OSやアプリ）」の利用や設定だけに集中できます。</p>
+
+        <h2>まとめ</h2>
+        <ul>
+            <li><strong>VDI</strong>は「仮想デスクトップを作るインフラ」。</li>
+            <li><strong>ランタイム</strong>は「VDIの上で動く、OSやアプリを含んだ実行環境」。</li>
+            <li>ランタイムが無ければ、VDIはただの「空っぽの箱」である。</li>
+        </ul>
+        <p>この階層関係をイメージできれば、DaaSの仕組みやトラブルシューティングの理解がぐっと早まります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

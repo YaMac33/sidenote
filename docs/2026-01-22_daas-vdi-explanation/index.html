@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>DaaSの概念と仮想デスクトップ：VDIをクラウドで「買う」時代の仕組み - Sidenote</title>
+  <meta name="description" content="VDI（仮想デスクトップ）をクラウドサービスとして提供する「DaaS」の仕組みを解説。オンプレミス型VDIとの違いや、クラウド基盤からユーザー端末までの提供フローを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="DaaSの概念と仮想デスクトップ：VDIをクラウドで「買う」時代の仕組み" />
+  <meta property="og:description" content="デスクトップ環境は「作る」から「利用する」へ。DaaSの全体像を可視化。" />
+  <meta property="og:url" content="https://example.com/articles/daas-concept-vdi.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* DaaS提供フロー図 */
+    .daas-flow-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .cloud-base {
+      width: 100%;
+      max-width: 600px;
+      border: 2px dashed #90a4ae;
+      padding: 1.5rem;
+      background: #eceff1;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .cloud-label {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #607d8b;
+      color: #fff;
+      padding: 0 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    /* DaaS管理層 */
+    .daas-layer {
+      background: #fff;
+      border: 2px solid var(--text-main);
+      padding: 1rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* VM並列表示 */
+    .vm-wrapper {
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    .vm-unit {
+      flex: 1;
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      padding: 0.8rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .vm-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #0d47a1;
+      display: block;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px dashed #2196f3;
+      padding-bottom: 0.2rem;
+    }
+
+    .runtime-box {
+      background: #fff;
+      border: 1px solid #bbdefb;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      color: #1565c0;
+    }
+
+    /* ネットワーク接続 */
+    .network-arrow {
+      font-size: 2rem;
+      color: var(--text-sub);
+      margin: -0.5rem 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* ユーザー端末 */
+    .user-layer {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    .device-box {
+      flex: 1;
+      background: var(--bg-color);
+      border: 2px solid var(--text-main);
+      padding: 1rem;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .device-icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    
+    .comparison-table th, .comparison-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 30%;
+    }
+
+    /* メリットリスト */
+    .merit-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .merit-card {
+      background: var(--code-bg);
+      padding: 1.2rem;
+      border-left: 4px solid var(--text-main);
+    }
+
+    .merit-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / インフラ・クラウド</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">DaaSの概念と仮想デスクトップ：VDIをクラウドで「買う」時代の仕組み</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#DaaS</li>
+            <li>#VDI</li>
+            <li>#クラウド</li>
+            <li>#仮想デスクトップ</li>
+            <li>#ITインフラ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>働き方改革やリモートワークの普及に伴い、注目を集めているのが「DaaS（Desktop as a Service）」です。簡単に言えば、<strong>「VDI（仮想デスクトップ）をクラウドサービスとして提供するもの」</strong>です。</p>
+        <p>自社でサーバーを構築・運用する従来のVDIと何が違うのか？クラウドの向こう側で何が動いているのか？その全体像を図解で解説します。</p>
+
+        <h2>1. DaaSの提供フロー（仕組みの可視化）</h2>
+        <p>DaaSでは、デスクトップ環境（OSやアプリ）の実体はクラウド上にあります。ユーザーは手元の端末から、インターネット経由でその画面を「操作」するだけです。</p>
+
+        <div class="daas-flow-container">
+            <!-- クラウド側 -->
+            <div class="cloud-base">
+                <span class="cloud-label">クラウド基盤 (AWS / Azure 等)</span>
+                
+                <div class="daas-layer">
+                    DaaS 管理レイヤー<br>
+                    <small>（プロビジョニング・監視・課金管理など）</small>
+                </div>
+
+                <div class="vm-wrapper">
+                    <div class="vm-unit">
+                        <span class="vm-title">仮想デスクトップ A</span>
+                        <div class="runtime-box">
+                            <strong>ランタイム</strong><br>
+                            OS + アプリ<br>
+                            (Aさん用環境)
+                        </div>
+                    </div>
+                    <div class="vm-unit">
+                        <span class="vm-title">仮想デスクトップ B</span>
+                        <div class="runtime-box">
+                            <strong>ランタイム</strong><br>
+                            OS + アプリ<br>
+                            (Bさん用環境)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ネットワーク -->
+            <div class="network-arrow">⬇ ⬆</div>
+            <p style="margin:0; font-size:0.8rem; color:var(--text-sub);">画面転送 / キーボード・マウス操作</p>
+
+            <!-- ユーザー側 -->
+            <div class="user-layer">
+                <div class="device-box">
+                    <span class="device-icon">💻</span>
+                    <strong>PC (Thin Client)</strong><br>
+                    <small>Aさんが操作</small>
+                </div>
+                <div class="device-box">
+                    <span class="device-icon">📱</span>
+                    <strong>タブレット</strong><br>
+                    <small>Bさんが操作</small>
+                </div>
+            </div>
+        </div>
+
+        <h3>重要な4つの要素</h3>
+        <ul>
+            <li><strong>クラウド基盤：</strong> サーバーやネットワークなどの物理インフラ。ユーザーは意識しません。</li>
+            <li><strong>DaaS管理レイヤー：</strong> 誰にどのデスクトップを割り当てるか、OSの更新などを管理する機能。</li>
+            <li><strong>仮想デスクトップ＋ランタイム：</strong> ユーザーが実際に使う「中身」。OSやアプリが動いている場所です。</li>
+            <li><strong>ユーザー端末：</strong> 画面を表示し、操作を入力するだけの「窓口」。処理能力は低くてもOKです。</li>
+        </ul>
+
+        <h2>2. オンプレミスVDIとDaaSの違い</h2>
+        <p>「仮想デスクトップを使う」という点では同じですが、「誰がインフラの面倒を見るか」が決定的に異なります。</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>比較項目</th>
+                    <th>オンプレミスVDI</th>
+                    <th>DaaS (クラウドVDI)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>構築場所</strong></td>
+                    <td>自社データセンター</td>
+                    <td>クラウド事業者の基盤</td>
+                </tr>
+                <tr>
+                    <td><strong>初期投資</strong></td>
+                    <td><strong>大</strong> (サーバー購入が必要)</td>
+                    <td><strong>小</strong> (契約のみ)</td>
+                </tr>
+                <tr>
+                    <td><strong>運用管理</strong></td>
+                    <td>ハードウェア保守まで自社</td>
+                    <td>OS・アプリ管理のみ<br>(ハードは事業者任せ)</td>
+                </tr>
+                <tr>
+                    <td><strong>拡張性</strong></td>
+                    <td>追加購入が必要 (時間かかる)</td>
+                    <td>契約変更で即時追加</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. DaaS導入のメリット</h2>
+        <p>なぜ多くの企業がDaaSへ移行しているのでしょうか。主な理由は「手離れの良さ」と「柔軟性」です。</p>
+
+        <div class="merit-list">
+            <div class="merit-card">
+                <span class="merit-title">運用負荷の激減</span>
+                <p>物理サーバーの故障対応や老朽化対策から解放されます。情シス部門は「デスクトップの中身」の管理だけに集中できます。</p>
+            </div>
+            <div class="merit-card">
+                <span class="merit-title">端末を選ばない</span>
+                <p>処理はすべてクラウド側で行われるため、手元の端末はハイスペックである必要がありません。古いPCやタブレットでも快適に業務が可能です。</p>
+            </div>
+            <div class="merit-card">
+                <span class="merit-title">セキュリティ向上</span>
+                <p>データはクラウド上にあり、端末には画面が転送されているだけです。端末を紛失しても、情報漏洩のリスクを最小限に抑えられます。</p>
+            </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>DaaSは、これまで自社で「建設・維持」していた仮想デスクトップ環境を、電気や水道のように「利用料を払って使う」モデルへと変えるものです。</p>
+        <ul>
+            <li><strong>VDIのクラウド版</strong> である。</li>
+            <li><strong>ランタイム（実行環境）</strong> はクラウド上で動作する。</li>
+            <li>ユーザーは<strong>端末からアクセスするだけ</strong> で、高性能な環境を利用できる。</li>
+        </ul>
+        <p>この構造を理解しておけば、DaaSの導入検討やトラブル時の切り分け（ネットワークの問題か、クラウド側の問題か）がスムーズになります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

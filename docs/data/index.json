@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-23T08:32:35+09:00",
+    "title": "6Gネットワークの知能基盤の未来",
+    "summary": "6Gは単なる高速通信ではなく、AIを活用した知能を備えた通信基盤の全体像を描いています。仮想分割や自律制御の進化によって、情報伝達の新たな形を提示します。",
+    "tags": [
+      "6G",
+      "通信",
+      "AI",
+      "ネットワークスライシング",
+      "セマンティック通信"
+    ],
+    "dir": "2026-01-23_6g-network-intelligence",
+    "repo_path": "/docs/2026-01-23_6g-network-intelligence/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-23_6g-network-intelligence"
+  },
+  {
     "timestamp": "2026-01-22T16:47:38+09:00",
     "title": "NFVとSDNの役割分担と活用法",
     "summary": "ネットワーク技術におけるNFVとSDNの違いを解説します。仮想化技術のNFVと制御技術のSDNの連携に焦点を当てています。",

@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T14:57:33+09:00",
+    "title": "DaaSとVDIの仕組みを解説",
+    "summary": "DaaS（Desktop as a Service）について、クラウド上でのVDIの仕組みや提供フローを詳しく説明します。メリットや従来のVDIとの違いについても触れています。",
+    "tags": [
+      "DaaS",
+      "VDI",
+      "クラウド",
+      "仮想デスクトップ",
+      "ITインフラ"
+    ],
+    "dir": "2026-01-22_daas-vdi-explanation",
+    "repo_path": "/docs/2026-01-22_daas-vdi-explanation/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_daas-vdi-explanation"
+  },
+  {
     "timestamp": "2026-01-22T14:49:41+09:00",
     "title": "DaaSにおけるランタイムの理解",
     "summary": "DaaSとVDIの関係をわかりやすく解説します。ランタイムの重要性を理解することで、DaaSの本質が見えてきます。",

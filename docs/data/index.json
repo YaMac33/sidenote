@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T16:47:38+09:00",
+    "title": "NFVとSDNの役割分担と活用法",
+    "summary": "ネットワーク技術におけるNFVとSDNの違いを解説します。仮想化技術のNFVと制御技術のSDNの連携に焦点を当てています。",
+    "tags": [
+      "NFV",
+      "SDN",
+      "仮想化",
+      "ネットワーク",
+      "ITパスポート"
+    ],
+    "dir": "2026-01-22_nfv-sdn-roles",
+    "repo_path": "/docs/2026-01-22_nfv-sdn-roles/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_nfv-sdn-roles"
+  },
+  {
     "timestamp": "2026-01-22T16:28:15+09:00",
     "title": "SDNの基本とその利点を解説",
     "summary": "SDNはネットワーク機器の制御をソフトウェアで集中管理する技術です。これにより運用の手間が大幅に削減され、柔軟性も高まります。",

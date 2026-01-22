@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>NFVとSDNの役割分担：「仮想化」と「制御」の最強コンビ - Sidenote</title>
+  <meta name="description" content="ネットワーク技術で頻出の「NFV」と「SDN」。言葉は似ていますが、役割は明確に違います。「作る技術」と「動かす技術」という観点から、両者の関係と組み合わせるメリットを図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="NFVとSDNの役割分担：「仮想化」と「制御」の最強コンビ" />
+  <meta property="og:description" content="専用機器をソフトに変えるNFV、それを操るSDN。次世代インフラの両輪を理解する。" />
+  <meta property="og:url" content="https://example.com/articles/nfv-sdn-roles.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 概念図：NFVとSDNのレイヤー構造 */
+    .tech-stack-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    /* SDN層（上部） */
+    .sdn-layer {
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #1976d2;
+      background: #e3f2fd;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      border-radius: 8px;
+    }
+
+    .layer-label {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      color: #fff;
+      padding: 0 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    .label-sdn { background: #1976d2; }
+    .label-nfv { background: #009688; }
+
+    .controller-icon {
+      font-weight: bold;
+      color: #0d47a1;
+      font-size: 1.1rem;
+    }
+
+    /* 制御の矢印 */
+    .control-arrows {
+      display: flex;
+      justify-content: space-around;
+      width: 80%;
+      margin: -1rem 0;
+      z-index: 1;
+    }
+    .arrow-vertical {
+      width: 2px;
+      height: 40px;
+      background: #1976d2;
+      position: relative;
+    }
+    .arrow-vertical::after {
+      content: "▼";
+      position: absolute;
+      bottom: -8px;
+      left: -5px;
+      color: #1976d2;
+      font-size: 0.8rem;
+    }
+
+    /* NFV層（下部） */
+    .nfv-layer {
+      width: 100%;
+      max-width: 550px;
+      border: 2px solid #009688;
+      background: #e0f2f1;
+      padding: 1.5rem 1rem 1rem;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .server-box {
+      background: #fff;
+      border: 2px solid #546e7a;
+      padding: 1rem;
+      border-radius: 4px;
+      position: relative;
+    }
+    
+    .server-label {
+      position: absolute;
+      bottom: -10px;
+      right: 10px;
+      background: #546e7a;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0 5px;
+    }
+
+    .vnf-container {
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    .vnf-item {
+      background: #fff;
+      border: 2px dashed #009688;
+      padding: 0.8rem;
+      text-align: center;
+      flex: 1;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    .vnf-title {
+      font-weight: bold;
+      color: #00695c;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .vnf-type {
+      font-size: 0.75rem;
+      background: #b2dfdb;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    /* 対比カード */
+    .role-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 600px) {
+      .role-comparison { grid-template-columns: 1fr; }
+    }
+
+    .role-card {
+      padding: 1.5rem;
+      border: 1px solid var(--line-color);
+      background: var(--bg-color);
+      text-align: center;
+    }
+
+    .role-card.nfv { border-top: 4px solid #009688; }
+    .role-card.sdn { border-top: 4px solid #1976d2; }
+
+    .role-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-header {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .keyword-box {
+      background: var(--code-bg);
+      padding: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    /* 試験対策テーブル */
+    .exam-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .exam-table th, .exam-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .exam-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 25%;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / ネットワーク技術</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">NFVとSDNの役割分担：「仮想化」と「制御」の最強コンビ</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#NFV</li>
+            <li>#SDN</li>
+            <li>#仮想化</li>
+            <li>#ネットワーク</li>
+            <li>#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ネットワーク技術の分野で頻出の「NFV」と「SDN」。どちらもネットワークを柔軟にする技術ですが、担当領域が異なります。</p>
+        <p>一言で言えば、<strong>「NFVは部品を作る技術」</strong>であり、<strong>「SDNはその部品を動かす技術」</strong>です。この記事では、この2つがどのように連携して次世代のインフラを支えているのかを図解で解説します。</p>
+
+        <h2>1. 用語の全体像と役割分担</h2>
+        <p>まずは、両者の役割を一言で定義します。</p>
+
+        <div class="role-comparison">
+            <div class="role-card nfv">
+                <span class="role-icon">📦</span>
+                <span class="role-header">NFV</span>
+                <small>Network Functions Virtualization</small>
+                <p>専用機器（ルータ等）をソフトウェア化して、汎用サーバ上で「作る」技術。</p>
+                <div class="keyword-box">キーワード：機能の仮想化</div>
+            </div>
+
+            <div class="role-card sdn">
+                <span class="role-icon">🎮</span>
+                <span class="role-header">SDN</span>
+                <small>Software Defined Networking</small>
+                <p>作られた機能同士の通信経路や動作を、ソフトウェアで集中「制御」する技術。</p>
+                <div class="keyword-box">キーワード：集中制御</div>
+            </div>
+        </div>
+
+        <h2>2. 全体構成の図解（連携イメージ）</h2>
+        <p>NFVで「仮想的なネットワーク機器（VNF）」を作り、SDNコントローラがそれらを指揮してネットワーク全体を動かします。</p>
+
+        <div class="tech-stack-container">
+            <!-- SDN層 -->
+            <div class="sdn-layer">
+                <span class="layer-label label-sdn">SDN (制御)</span>
+                <div class="controller-icon">SDNコントローラ</div>
+                <p style="font-size:0.85rem; margin:0.5rem 0 0;">
+                    「AからBへ通信せよ」「ここは遮断せよ」と指示
+                </p>
+            </div>
+
+            <!-- 矢印 -->
+            <div class="control-arrows">
+                <div class="arrow-vertical"></div>
+                <div class="arrow-vertical"></div>
+                <div class="arrow-vertical"></div>
+            </div>
+
+            <!-- NFV層 -->
+            <div class="nfv-layer">
+                <span class="layer-label label-nfv">NFV (仮想化)</span>
+                <div class="server-box">
+                    <div class="vnf-container">
+                        <div class="vnf-item">
+                            <span class="vnf-title">VNF 1</span>
+                            <span class="vnf-type">Firewall</span>
+                        </div>
+                        <div class="vnf-item">
+                            <span class="vnf-title">VNF 2</span>
+                            <span class="vnf-type">Router</span>
+                        </div>
+                        <div class="vnf-item">
+                            <span class="vnf-title">VNF 3</span>
+                            <span class="vnf-type">Load Balancer</span>
+                        </div>
+                    </div>
+                    <span class="server-label">汎用サーバ (IAサーバ)</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>用語の整理</h3>
+        <ul>
+            <li><strong>NFV：</strong> ネットワーク機能を仮想化する「技術全体」のこと。</li>
+            <li><strong>VNF：</strong> NFVによって作られた「個々の仮想機能（仮想ルータなど）」のこと。</li>
+        </ul>
+
+        <h2>3. なぜ組み合わせるのか？</h2>
+        <p>NFVだけでも「高価な専用機器を買わなくて済む」というメリットはあります。しかし、仮想化されたルータやファイアウォールがバラバラに動いているだけでは、管理の手間は変わりません。</p>
+        <p>そこでSDNの出番です。SDNを組み合わせることで、<strong>「VNFの立ち上げ（NFV）」から「通信経路の設定（SDN）」までを全自動化</strong>できるようになります。これにより、柔軟でスケーラブルなネットワークが完成します。</p>
+
+        <h2>4. 試験対策：SDNとNFVの違い</h2>
+        <p>ITパスポートや基本情報技術者試験では、説明文がどちらを指しているかを問われます。</p>
+
+        <table class="exam-table">
+            <thead>
+                <tr>
+                    <th>項目</th>
+                    <th>NFV</th>
+                    <th>SDN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>主目的</strong></td>
+                    <td>機能の仮想化（脱・専用機器）</td>
+                    <td>ネットワークの集中制御</td>
+                </tr>
+                <tr>
+                    <td><strong>対象</strong></td>
+                    <td>ルータ、FW、ロードバランサ等</td>
+                    <td>通信経路、トラフィック、スイッチ</td>
+                </tr>
+                <tr>
+                    <td><strong>成果物</strong></td>
+                    <td>VNF（仮想化された機能）</td>
+                    <td>制御ルール、ポリシー</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>試験で迷ったら、以下のフレーズで判別してください。</p>
+        <ul>
+            <li><strong>「専用機器を不要にする」「仮想化する」</strong> とあれば → <strong>NFV</strong></li>
+            <li><strong>「ソフトウェアで制御する」「集中管理する」</strong> とあれば → <strong>SDN</strong></li>
+        </ul>
+        <p>「NFVで作って、SDNで操る」。この役割分担さえ押さえておけば、複雑なネットワーク用語も怖くありません。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

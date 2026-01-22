@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T16:28:15+09:00",
+    "title": "SDNの基本とその利点を解説",
+    "summary": "SDNはネットワーク機器の制御をソフトウェアで集中管理する技術です。これにより運用の手間が大幅に削減され、柔軟性も高まります。",
+    "tags": [
+      "SDN",
+      "ネットワーク",
+      "仮想化",
+      "OpenFlow",
+      "ITパスポート"
+    ],
+    "dir": "2026-01-22_sdn-basics-merits",
+    "repo_path": "/docs/2026-01-22_sdn-basics-merits/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_sdn-basics-merits"
+  },
+  {
     "timestamp": "2026-01-22T15:58:37+09:00",
     "title": "リスク優先順位付けの考え方",
     "summary": "リスク評価とは、発生確率と影響度を使い、リスクの優先順位を付ける手法です。具体例を通じて理解を深めることが重要です。",

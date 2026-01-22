@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>DaaSのランタイムの違い：永続型と非永続型のアーキテクチャ比較 - Sidenote</title>
+  <meta name="description" content="DaaSには「永続型（Persistent）」と「非永続型（Non-persistent）」の2種類があります。ランタイムの扱いやカスタマイズ性がどう違うのか、アーキテクチャ図で比較解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="DaaSのランタイムの違い：永続型と非永続型のアーキテクチャ比較" />
+  <meta property="og:description" content="「マイホーム」か「ホテル」か。DaaS選定の分かれ道を理解する。" />
+  <meta property="og:url" content="https://example.com/articles/daas-runtime-types.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* アーキテクチャ比較図 */
+    .arch-container {
+      margin: 2.5rem 0;
+      padding: 1rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .comparison-wrapper {
+      display: flex;
+      gap: 2rem;
+      min-width: 600px;
+      justify-content: center;
+    }
+
+    .arch-column {
+      flex: 1;
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .col-header {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    /* 共通クラウド層 */
+    .cloud-layer {
+      background: #eceff1;
+      border: 2px dashed #90a4ae;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #546e7a;
+      border-radius: 4px;
+    }
+
+    /* DaaS管理層 */
+    .manage-layer {
+      background: #fff;
+      border: 1px solid var(--text-main);
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    /* VM・ランタイム層 */
+    .vm-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      background: #e3f2fd; /* Persistent Base */
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid #90caf9;
+    }
+
+    .non-persistent .vm-group {
+      background: #e0f2f1; /* Non-persistent Base */
+      border-color: #80cbc4;
+    }
+
+    .vm-box {
+      background: #fff;
+      border: 2px solid #1976d2;
+      padding: 0.8rem;
+      position: relative;
+      border-radius: 4px;
+    }
+
+    .non-persistent .vm-box {
+      border-color: #009688;
+      border-style: dashed; /* 使い捨て感 */
+    }
+
+    .vm-label {
+      font-size: 0.75rem;
+      position: absolute;
+      top: -8px;
+      left: 10px;
+      background: #1976d2;
+      color: #fff;
+      padding: 0 5px;
+    }
+
+    .non-persistent .vm-label {
+      background: #009688;
+    }
+
+    .runtime-content {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .app-icon {
+      display: inline-block;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin: 2px;
+      font-size: 0.75rem;
+    }
+
+    .custom-badge {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    /* ユーザー端末 */
+    .user-device {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .arrow-connect {
+      font-size: 1.5rem;
+      color: var(--text-sub);
+      display: block;
+      margin: 0.5rem 0;
+    }
+
+    /* 比較テーブル */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .spec-table th, .spec-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .spec-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 20%;
+    }
+    .spec-table .highlight {
+      background: #e3f2fd;
+      font-weight: bold;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / 技術解説・DaaS</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">DaaSのランタイムの違い：永続型と非永続型のアーキテクチャ比較</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#DaaS</li>
+            <li>#仮想デスクトップ</li>
+            <li>#ランタイム</li>
+            <li>#クラウド</li>
+            <li>#アーキテクチャ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>DaaS（Desktop as a Service）を導入する際、最初に決めなければならない重要な選択肢があります。それが<strong>「Persistent（永続型）」</strong>か<strong>「Non-persistent（非永続型）」</strong>かという違いです。</p>
+        <p>どちらも「クラウド上のランタイム（実行環境）を使う」点は同じですが、その中身の扱われ方は「マイホーム」と「ホテル」ほど異なります。この記事では、両者のアーキテクチャの違いを図解で解説します。</p>
+
+        <h2>アーキテクチャの比較図解</h2>
+        <p>クラウドの向こう側で、仮想デスクトップ（VM）とランタイムがどのようにユーザーに割り当てられているかを見てみましょう。</p>
+
+        <div class="arch-container">
+            <div class="comparison-wrapper">
+                <!-- Persistent -->
+                <div class="arch-column">
+                    <div class="col-header">Persistent (永続型)</div>
+                    
+                    <div class="cloud-layer">
+                        クラウド基盤 (AWS / Azure etc.)
+                        <div class="manage-layer" style="margin-top:0.5rem;">DaaS管理層 (紐付け管理)</div>
+                    </div>
+
+                    <div class="vm-group">
+                        <div class="vm-box">
+                            <span class="vm-label">VM A (User 1 専用)</span>
+                            <strong>ランタイム A</strong>
+                            <div class="runtime-content">
+                                <span class="app-icon">OS</span>
+                                <span class="app-icon">Office</span>
+                                <span class="app-icon custom-badge">壁紙変更</span>
+                                <span class="app-icon custom-badge">独自アプリ</span>
+                            </div>
+                        </div>
+                        <div class="vm-box">
+                            <span class="vm-label">VM B (User 2 専用)</span>
+                            <strong>ランタイム B</strong>
+                            <div class="runtime-content">
+                                <span class="app-icon">OS</span>
+                                <span class="app-icon">Office</span>
+                                <span class="app-icon custom-badge">開発ツール</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-device">
+                        <span class="arrow-connect">⬇ ⬆</span>
+                        <div>User 1 / User 2<br><small>（常に同じVMに接続）</small></div>
+                    </div>
+                </div>
+
+                <!-- Non-persistent -->
+                <div class="arch-column non-persistent">
+                    <div class="col-header">Non-persistent (非永続型)</div>
+                    
+                    <div class="cloud-layer">
+                        クラウド基盤 (AWS / Azure etc.)
+                        <div class="manage-layer" style="margin-top:0.5rem;">DaaS管理層 (プール管理)</div>
+                    </div>
+
+                    <div class="vm-group">
+                        <div class="vm-box">
+                            <span class="vm-label">VM Pool (共有リソース)</span>
+                            <strong>標準ランタイム (マスター)</strong>
+                            <div class="runtime-content">
+                                <span class="app-icon">OS</span>
+                                <span class="app-icon">Office</span>
+                                <span class="app-icon">業務アプリA</span>
+                            </div>
+                            <p style="font-size:0.75rem; color:#d32f2f; margin-top:0.5rem;">
+                                ※ログオフ時にリセット
+                            </p>
+                        </div>
+                        <div class="vm-box" style="opacity:0.5; border-style:dotted;">
+                            <small>待機中のクローンVM...</small>
+                        </div>
+                    </div>
+
+                    <div class="user-device">
+                        <span class="arrow-connect">⬇ ⬆</span>
+                        <div>User 1 / User 2<br><small>（空いているVMに接続）</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>それぞれの特徴とランタイムの振る舞い</h2>
+
+        <h3>1. Persistent DaaS（永続型）</h3>
+        <p><strong>「自分専用のPC」</strong>をクラウドに置くイメージです。</p>
+        <ul>
+            <li><strong>ランタイム：</strong> ユーザーが行った変更（アプリのインストール、設定変更、ファイル保存）はすべて保持されます。</li>
+            <li><strong>メリット：</strong> ユーザー体験が良い。物理PCと同じ感覚で使える。</li>
+            <li><strong>デメリット：</strong> 管理が大変。OSのアップデートや不具合対応を1台ずつ（あるいはユーザーごとに）行う必要があります。</li>
+        </ul>
+
+        <h3>2. Non-persistent DaaS（非永続型）</h3>
+        <p><strong>「ホテルの客室」</strong>のようなイメージです。チェックアウト（ログオフ）すると部屋は清掃（リセット）されます。</p>
+        <ul>
+            <li><strong>ランタイム：</strong> マスターイメージからコピーされた「標準環境」を使います。ログオフすると変更は破棄され、初期状態に戻ります。</li>
+            <li><strong>メリット：</strong> 管理が非常に楽。マスターイメージを1つ更新すれば、全ユーザーに適用されます。セキュリティも高く、常にクリーンです。</li>
+            <li><strong>デメリット：</strong> ユーザーが勝手にアプリを入れたりできません（設定保存には別途プロファイル管理ツールが必要）。</li>
+        </ul>
+
+        <h2>機能比較テーブル</h2>
+        <p>導入選定の際は、以下の違いを考慮する必要があります。</p>
+
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>項目</th>
+                    <th>Persistent (永続型)</th>
+                    <th>Non-persistent (非永続型)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>割り当て</strong></td>
+                    <td>ユーザー固定（1対1）</td>
+                    <td>プールから動的割り当て</td>
+                </tr>
+                <tr>
+                    <td><strong>カスタマイズ</strong></td>
+                    <td class="highlight">自由（保持される）</td>
+                    <td>不可（リセットされる）</td>
+                </tr>
+                <tr>
+                    <td><strong>OS更新</strong></td>
+                    <td>個別対応が必要</td>
+                    <td class="highlight">マスター更新のみで完了</td>
+                </tr>
+                <tr>
+                    <td><strong>ストレージ</strong></td>
+                    <td>ユーザー数分必要</td>
+                    <td>共有利用で節約可能</td>
+                </tr>
+                <tr>
+                    <td><strong>適した用途</strong></td>
+                    <td>開発者、パワーユーザー</td>
+                    <td>コールセンター、一般事務</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>DaaSにおけるランタイムの違いは、<strong>「変更を保存するか、捨てるか」</strong>に集約されます。</p>
+        <ul>
+            <li>個別の環境が必要なら <strong>Persistent</strong></li>
+            <li>効率とセキュリティ重視なら <strong>Non-persistent</strong></li>
+        </ul>
+        <p>どちらもVDI上で動作する実行環境である点に変わりはありませんが、運用コストとユーザーの利便性はトレードオフの関係にあります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

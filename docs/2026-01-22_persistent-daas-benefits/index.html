@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>Persistent DaaSの利点：なぜ自治体や高セキュリティ環境で選ばれるのか？ - Sidenote</title>
+  <meta name="description" content="DaaSには永続型と非永続型がありますが、自治体などの分離ネットワーク環境では「Persistent（永続型）」が推奨されます。その理由を、業務効率とカスタマイズ性の観点から解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Persistent DaaSの利点：なぜ自治体や高セキュリティ環境で選ばれるのか？" />
+  <meta property="og:description" content="毎回リセットされる不便さを解消。個人ごとの「専用デスクトップ」が必要な理由。" />
+  <meta property="og:url" content="https://example.com/articles/persistent-daas-benefits.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* アナロジー図解 */
+    .analogy-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .analogy-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    @media (min-width: 600px) {
+      .analogy-row {
+        flex-direction: row;
+        align-items: stretch;
+      }
+    }
+
+    .analogy-card {
+      flex: 1;
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 1.5rem;
+      position: relative;
+      border-radius: 8px;
+    }
+
+    .analogy-card.persistent {
+      border-top: 4px solid #2e7d32; /* Green */
+    }
+    
+    .analogy-card.non-persistent {
+      border-top: 4px solid #ef5350; /* Red */
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      text-align: center;
+    }
+
+    .card-header {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      border-bottom: 1px dashed var(--line-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .state-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+    .state-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5em;
+      position: relative;
+    }
+    .state-list li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: var(--text-main);
+    }
+
+    /* ネットワーク分離の図 */
+    .network-sep-box {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #e3f2fd;
+      border: 2px dashed #1976d2;
+      position: relative;
+    }
+
+    .sep-line {
+      border-bottom: 4px double #fff;
+      margin: 1rem 0;
+      position: relative;
+      text-align: center;
+    }
+    .sep-label {
+      background: #1976d2;
+      color: #fff;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 20px;
+      position: relative;
+      top: -12px;
+    }
+
+    .system-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .sys-box {
+      background: #fff;
+      padding: 0.8rem;
+      text-align: center;
+      border-radius: 4px;
+      flex: 1;
+      font-size: 0.9rem;
+      border: 1px solid #90caf9;
+    }
+
+    .daas-highlight {
+      border: 2px solid #d32f2f;
+      background: #ffebee;
+      color: #b71c1c;
+      font-weight: bold;
+    }
+
+    /* 適合マトリックス */
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--line-color);
+      padding: 0.8rem;
+      text-align: center;
+    }
+    .matrix-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+    }
+    .matrix-table td.ok {
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+    .matrix-table td.ng {
+      color: var(--text-sub);
+      background: #fafafa;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / 自治体DX・クラウド</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">Persistent DaaSの利点：なぜ自治体や高セキュリティ環境で選ばれるのか？</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#DaaS</li>
+            <li>#自治体</li>
+            <li>#仮想デスクトップ</li>
+            <li>#業務効率</li>
+            <li>#ネットワーク分離</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>地方自治体や金融機関など、セキュリティ要件が厳しい組織で導入が進む「DaaS（Desktop as a Service）」。その中でも、特に<strong>「Persistent（永続型）」</strong>と呼ばれるタイプが選ばれる傾向にあります。</p>
+        <p>なぜ、管理が簡単な「非永続型」ではなく、あえて「永続型」が必要なのか？その理由は、現場の業務効率とネットワーク環境の特殊性にあります。</p>
+
+        <h2>1. 「マイホーム」か「ホテル」か：仕組みの違い</h2>
+        <p>Persistent DaaSの最大の特徴は、ユーザーごとに専用の仮想デスクトップ（VM）が割り当てられ、<strong>「変更内容が保存される」</strong>点です。</p>
+
+        <div class="analogy-container">
+            <div class="analogy-row">
+                <div class="analogy-card persistent">
+                    <span class="card-icon">🏠</span>
+                    <div class="card-header">Persistent (永続型)</div>
+                    <ul class="state-list">
+                        <li><strong>マイホーム感覚：</strong>自分専用の部屋</li>
+                        <li><strong>変更維持：</strong>壁紙、アイコン配置、インストールしたアプリがそのまま残る</li>
+                        <li><strong>翌日も継続：</strong>「昨日の続き」からすぐに仕事ができる</li>
+                    </ul>
+                </div>
+
+                <div class="analogy-card non-persistent">
+                    <span class="card-icon">🏨</span>
+                    <div class="card-header">Non-persistent (非永続型)</div>
+                    <ul class="state-list">
+                        <li><strong>ホテル感覚：</strong>毎回違うきれいな部屋</li>
+                        <li><strong>リセット：</strong>ログオフすると全ての変更が消え、初期状態に戻る</li>
+                        <li><strong>効率重視：</strong>コールセンターなど、定型業務には最適だが…</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h2>2. 自治体・分離ネットワークでの必要性</h2>
+        <p>自治体のシステム環境は、セキュリティのために「LGWAN系（基幹系）」と「インターネット系（情報系）」が厳密に分離されています。</p>
+        <p>職員は、普段の業務端末からインターネット側のアプリ（メールや申請ツールなど）を使うために、画面転送でDaaSを利用します。</p>
+
+        <div class="network-sep-box">
+            <div class="system-group">
+                <div class="sys-box" style="background:#e8f5e9; border-color:#66bb6a;">
+                    <strong>LGWAN系</strong><br>
+                    住基ネット・税務<br>
+                    <small>（手元の物理PC）</small>
+                </div>
+                
+                <!-- 境界線 -->
+                <div style="font-size:2rem; color:#90a4ae;">⇹</div>
+
+                <div class="sys-box daas-highlight">
+                    <strong>インターネット系</strong><br>
+                    Web閲覧・メール<br>
+                    <small>（DaaS上の仮想PC）</small>
+                </div>
+            </div>
+            
+            <div class="sep-line">
+                <span class="sep-label">ネットワーク分離（直接通信不可）</span>
+            </div>
+            
+            <p style="text-align:center; font-size:0.9rem; margin-top:1rem;">
+                職員は手元のPCから、<strong>Persistent DaaS</strong> の画面を呼び出して操作する。
+            </p>
+        </div>
+
+        <h3>なぜここで「永続型」が必要なのか？</h3>
+        <p>インターネット系の業務でも、個人単位の設定や履歴が必要になる場面が多いからです。</p>
+        <ul>
+            <li><strong>ブラウザの設定：</strong> お気に入り、Cookie、認証情報（毎回ログインし直すのは手間）。</li>
+            <li><strong>電子証明書：</strong> 申請システムなどで使う個人の証明書をインストールしておく必要がある。</li>
+            <li><strong>デスクトップ環境：</strong> よく使うファイルのショートカットや、作業途中のドキュメントの保存。</li>
+        </ul>
+        <p>もし「非永続型」だと、毎朝ログインするたびにこれらがリセットされ、設定作業から始めなければなりません。これでは業務になりません。</p>
+
+        <h2>3. 他のクラウドサービスとの比較</h2>
+        <p>「SaaSだけでいいのでは？」と思うかもしれませんが、分離ネットワーク環境ではDaaSが最適解となります。</p>
+
+        <table class="matrix-table">
+            <thead>
+                <tr>
+                    <th>サービス</th>
+                    <th>分離NWでの適合性</th>
+                    <th>理由・課題</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>SaaS</strong><br><small>(Gmail等)</small></td>
+                    <td class="ng">△</td>
+                    <td>ブラウザ単体での利用なら良いが、端末にデータを残せないため、ファイルのやり取りや連携が難しい。</td>
+                </tr>
+                <tr>
+                    <td><strong>IaaS</strong><br><small>(AWS EC2等)</small></td>
+                    <td class="ng">△</td>
+                    <td>自由度は高いが、職員一人ひとりがOS設定やセキュリティ管理をするのは現実的ではない。</td>
+                </tr>
+                <tr>
+                    <td><strong>PaaS</strong><br><small>(開発環境)</small></td>
+                    <td class="ng">×</td>
+                    <td>開発者向けであり、一般職員の業務利用には適さない。</td>
+                </tr>
+                <tr>
+                    <td><strong>DaaS</strong><br><small>(Persistent)</small></td>
+                    <td class="ok">◎</td>
+                    <td>OSごと個人環境を提供できるため、物理PCと同じ感覚で分離環境を利用できる。</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>Persistent DaaSは、クラウド上にありながら<strong>「自分専用のPC」</strong>を持てるサービスです。</p>
+        <p>特に自治体のような「ネットワーク分離」が必須の環境において、セキュリティ（データを持たせない）と利便性（いつもの環境が使える）を両立させるための、現実的かつ強力なソリューションと言えます。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

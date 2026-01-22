@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>6Gネットワークの全体像：知能を持つ通信基盤の未来 - Sidenote</title>
+  <meta name="description" content="5Gの次に来る「6G」は単なる高速化ではありません。AIによる自律制御、意味を理解する通信、用途ごとの仮想分割など、社会基盤そのものが「知能」を持つ未来像を図解します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="6Gネットワークの全体像：知能を持つ通信基盤の未来" />
+  <meta property="og:description" content="通信網そのものが「頭脳」を持つ。6Gが描く知能基盤のアーキテクチャ。" />
+  <meta property="og:url" content="https://example.com/articles/6g-network-overview.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 6Gアーキテクチャ図 */
+    .arch-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .box-base {
+      background: var(--bg-color);
+      border: 2px solid var(--text-main);
+      padding: 1rem;
+      text-align: center;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .box-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .box-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    /* 6Gコア層 */
+    .core-layer {
+      background: #e8eaf6; /* Indigo 50 */
+      border-color: #3949ab;
+    }
+    .core-layer .box-title { color: #283593; }
+
+    /* 分岐ライン */
+    .branch-line {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 20px;
+    }
+    .branch-line::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 100%;
+      width: 2px;
+      background: var(--text-main);
+    }
+    .branch-line::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      right: 25%;
+      height: 2px;
+      background: var(--text-main);
+    }
+
+    /* 機能層（スライシング・AI） */
+    .func-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 600px;
+      gap: 1rem;
+    }
+
+    .func-box {
+      flex: 1;
+      padding: 1rem;
+      border: 1px solid var(--line-color);
+      background: #fff;
+      border-radius: 4px;
+      position: relative;
+    }
+    
+    .func-box::before {
+      content: "";
+      position: absolute;
+      top: -20px; /* branch-lineの高さ */
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: var(--text-main);
+    }
+
+    .func-title {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px dashed var(--line-color);
+      padding-bottom: 0.3rem;
+    }
+
+    .func-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.85rem;
+    }
+    .func-list li {
+      margin-bottom: 0.3rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .func-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--text-sub);
+    }
+
+    /* セマンティック通信層 */
+    .semantic-layer {
+      background: #e0f2f1; /* Teal 50 */
+      border-color: #00897b;
+      margin-top: 1rem;
+      width: 80%;
+    }
+    .semantic-layer .box-title { color: #00695c; }
+
+    /* 接続矢印 */
+    .arrow-down {
+      font-size: 1.5rem;
+      color: var(--text-main);
+      margin: -0.5rem 0;
+    }
+
+    /* デバイス層 */
+    .device-row {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 600px;
+      gap: 1rem;
+    }
+
+    .device-card {
+      flex: 1;
+      background: #fff;
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: center;
+      border-top: 4px solid var(--text-main);
+    }
+
+    /* アナロジーBOX */
+    .analogy-box {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      border-left: 5px solid var(--text-main);
+      margin: 2rem 0;
+    }
+    .analogy-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / 通信技術・未来予測</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">6Gネットワークの全体像：知能を持つ通信基盤の未来</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#6G</li>
+            <li>#通信</li>
+            <li>#AI</li>
+            <li>#ネットワークスライシング</li>
+            <li>#セマンティック通信</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>5Gの普及が進む中、世界ではすでに次世代の通信規格「6G（Beyond 5G）」の研究が進んでいます。6Gは、単に通信速度が速くなるだけではありません。</p>
+        <p>最大の特徴は、AIやネットワークスライシング技術と融合し、<strong>「通信網そのものが知能を持つ社会基盤」</strong>へと進化する点です。その全体像を図解で解説します。</p>
+
+        <h2>6Gの知能基盤アーキテクチャ</h2>
+        <p>6Gの世界では、1つの物理的なネットワークの上に、用途別の仮想ネットワークやAI制御層が重なり合って構成されます。</p>
+
+        <div class="arch-container">
+            <!-- 1. 6Gネットワーク層 -->
+            <div class="box-base core-layer">
+                <span class="box-title">6Gネットワーク（知能基盤）</span>
+                <span class="box-desc">社会・機械に知能を与える土台</span>
+            </div>
+
+            <div class="branch-line"></div>
+
+            <!-- 2. 機能層 -->
+            <div class="func-row">
+                <div class="func-box">
+                    <div class="func-title">ネットワークスライシング</div>
+                    <ul class="func-list">
+                        <li>用途別に仮想分割</li>
+                        <li>超高速 (eMBB)</li>
+                        <li>超低遅延 (URLLC)</li>
+                        <li>多数同時接続 (mMTC)</li>
+                    </ul>
+                </div>
+                <div class="func-box">
+                    <div class="func-title">AI制御層</div>
+                    <ul class="func-list">
+                        <li>通信のリアルタイム最適化</li>
+                        <li>自律的なリソース配分</li>
+                        <li>エッジ/クラウドでの推論</li>
+                        <li>故障予知・自動修復</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <!-- 3. セマンティック通信層 -->
+            <div class="box-base semantic-layer">
+                <span class="box-title">セマンティック通信層</span>
+                <span class="box-desc">
+                    「意味」重視の通信<br>
+                    <small>不要なデータは送らず、重要な情報だけを抽出・圧縮して送信</small>
+                </span>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <!-- 4. デバイス層 -->
+            <div class="device-row">
+                <div class="device-card">
+                    <strong>🚗 自動運転車</strong><br>
+                    <small>障害物情報<br>緊急信号<br>(超低遅延)</small>
+                </div>
+                <div class="device-card">
+                    <strong>🥽 AR/VR・遠隔医療</strong><br>
+                    <small>視線・触覚情報<br>センサーデータ<br>(超高速・高信頼)</small>
+                </div>
+            </div>
+        </div>
+
+        <h2>図解のポイント解説</h2>
+        
+        <h3>1. ネットワークスライシングの進化</h3>
+        <p>5Gでも導入されていますが、6Gではさらに細分化されます。「自動運転専用の道路」「動画視聴専用の道路」のように、1本の回線を用途ごとに仮想的に分割し、混雑による影響を排除します。</p>
+
+        <h3>2. AI制御層（自律神経）</h3>
+        <p>人間が設定するのではなく、AIがネットワークの状態を監視し、瞬時に最適化します。「このエリアで人が増えたから帯域を広げる」「障害物を検知したから遅延を最小にする」といった判断を自律的に行います。</p>
+
+        <h3>3. セマンティック通信（意味の伝送）</h3>
+        <p>これまでの通信は、データをビット列として「正確に全部送る」ことが使命でした。しかし6Gでは、AIが<strong>「情報の意味」を理解し、必要な部分だけを送ります</strong>。</p>
+        <p>例えば、ビデオ会議で背景の壁のデータを送り続けるのではなく、「人の表情の変化」だけを送り、受信側のAIが映像を再構成する、といった技術です。これにより、通信量を劇的に削減できます。</p>
+
+        <div class="analogy-box">
+            <span class="analogy-title">💡 道路で例えると？</span>
+            <ul>
+                <li><strong>5G：</strong> とにかく広くて真っ直ぐな「高速道路」。</li>
+                <li><strong>6G：</strong> 自動運転車が走り、信号機が交通量を判断して青信号の長さを変え、事故があれば瞬時にルートを変更する<strong>「自律制御されたスマートシティの交通網」</strong>。</li>
+            </ul>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>6Gは、「速いネット」という枠を超え、現実世界（フィジカル）と仮想世界（サイバー）を継ぎ目なく繋ぐ神経網になります。</p>
+        <p><strong>「ネットワークスライシング × セマンティック通信 × AI制御」</strong>。この3つの技術が組み合わさることで、必要な情報が必要な場所に、瞬時に、最も効率的な形で届く未来が実現します。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>リスク優先順位付けの考え方：発生確率×影響度のマトリクス攻略 - Sidenote</title>
+  <meta name="description" content="ITパスポート試験で頻出の「リスクの優先順位付け」。発生確率と影響度の2軸を使ったリスクマトリクスの見方と、具体的なリスク事例（ウイルス、地震など）の評価方法を図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="リスク優先順位付けの考え方：発生確率×影響度のマトリクス攻略" />
+  <meta property="og:description" content="何から対策すべきか？リスク評価の「定規」を手に入れる。" />
+  <meta property="og:url" content="https://example.com/articles/risk-prioritization.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* リスクマトリクス図解 */
+    .matrix-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .matrix-title {
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr 1fr;
+      grid-template-rows: 40px 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* 軸ラベル */
+    .axis-y-label {
+      grid-row: 2 / 4;
+      grid-column: 1 / 2;
+      writing-mode: vertical-rl;
+      text-align: center;
+      transform: rotate(180deg);
+      font-weight: bold;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .axis-x-label {
+      grid-row: 4 / 5; /* 下部に配置 */
+      grid-column: 2 / 5;
+      text-align: center;
+      font-weight: bold;
+      color: var(--text-sub);
+      padding-top: 0.5rem;
+    }
+
+    .label-header {
+      background: transparent;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    /* セル */
+    .matrix-cell {
+      background: #fff;
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 120px;
+    }
+
+    /* 優先度カラー（背景） */
+    .priority-high { background-color: #ffebee; border-color: #ef9a9a; } /* 赤：高 */
+    .priority-mid { background-color: #fff8e1; border-color: #ffe082; }  /* 黄：中 */
+    .priority-low { background-color: #e3f2fd; border-color: #90caf9; }  /* 青：低 */
+
+    /* リスクアイテム（バッジ） */
+    .risk-badge {
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+      width: 90%;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--text-main);
+      cursor: default;
+    }
+
+    .risk-badge.type-a { border-left: 5px solid #ff9800; }
+    .risk-badge.type-b { border-left: 5px solid #2196f3; }
+    .risk-badge.type-c { border-left: 5px solid #f44336; }
+    .risk-badge.type-d { border-left: 5px solid #9c27b0; }
+
+    /* リスク詳細リスト */
+    .risk-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .risk-card {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 1.2rem;
+      position: relative;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      border-bottom: 1px dashed var(--line-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .risk-tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--code-bg);
+      color: var(--text-sub);
+    }
+
+    /* 優先順位フロー */
+    .priority-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fafafa;
+      border-radius: 8px;
+    }
+    
+    .p-step {
+      font-weight: bold;
+      color: var(--text-main);
+    }
+    .p-arrow { color: var(--text-sub); }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / リスクマネジメント</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">リスク優先順位付けの考え方：発生確率×影響度のマトリクス攻略</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#リスク管理</li>
+            <li>#優先順位</li>
+            <li>#リスクマトリクス</li>
+            <li>#ITパスポート</li>
+            <li>#試験対策</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>システム運用には多くのリスクが潜んでいますが、予算も人も限られています。すべてのリスクに完璧な対策をすることは不可能です。</p>
+        <p>そこで重要になるのが<strong>「優先順位付け」</strong>です。ITパスポート試験などでも頻出の「リスク評価（アセスメント）」の基本的な考え方を、図解で整理します。</p>
+
+        <h2>1. 評価の物差し：2つの軸</h2>
+        <p>リスクの大きさは、感覚で決めるのではなく、以下の2つの軸の掛け算で定量的に評価します。</p>
+        <blockquote>
+            <strong>リスクの大きさ ＝ 発生確率 × 影響度</strong>
+        </blockquote>
+        <ul>
+            <li><strong>発生確率（頻度）：</strong> どれくらい起こりやすいか？</li>
+            <li><strong>影響度（損失）：</strong> 起きたらどれくらい困るか？</li>
+        </ul>
+        <p>この2つが「ともに高い」ものが最優先。片方だけ高い場合は、その性質に応じた対策が必要になります。</p>
+
+        <h2>2. 具体例で見るリスクの種類</h2>
+        <p>よくある4つのリスク事例を分類してみましょう。</p>
+
+        <div class="risk-list">
+            <div class="risk-card">
+                <div class="card-head">
+                    <span style="color:#f44336;">●</span> C. ウイルス感染
+                </div>
+                <span class="risk-tag">確率：中</span> <span class="risk-tag">影響：中</span>
+                <p style="font-size:0.9rem; margin-top:0.5rem;">
+                    時々発生し、業務停止などの実害が出る。日常的かつ無視できないリスク。
+                </p>
+            </div>
+            
+            <div class="risk-card">
+                <div class="card-head">
+                    <span style="color:#ff9800;">●</span> A. パスワード使い回し
+                </div>
+                <span class="risk-tag">確率：高</span> <span class="risk-tag">影響：中</span>
+                <p style="font-size:0.9rem; margin-top:0.5rem;">
+                    現場で頻繁に行われているが、即座に会社が潰れるわけではない（潜在的リスク）。
+                </p>
+            </div>
+
+            <div class="risk-card">
+                <div class="card-head">
+                    <span style="color:#2196f3;">●</span> B. サーバ故障
+                </div>
+                <span class="risk-tag">確率：低</span> <span class="risk-tag">影響：高</span>
+                <p style="font-size:0.9rem; margin-top:0.5rem;">
+                    めったに起きないが、起きたらサービス停止などの大損害になる。
+                </p>
+            </div>
+
+            <div class="risk-card">
+                <div class="card-head">
+                    <span style="color:#9c27b0;">●</span> D. 地震・大災害
+                </div>
+                <span class="risk-tag">確率：低</span> <span class="risk-tag">影響：極高</span>
+                <p style="font-size:0.9rem; margin-top:0.5rem;">
+                    発生確率は極めて低いが、起これば会社存続に関わる壊滅的被害が出る。
+                </p>
+            </div>
+        </div>
+
+        <h2>3. リスクマトリクスによる可視化</h2>
+        <p>上記のリスクを、縦軸に「影響度」、横軸に「発生確率」をとったマトリクスに配置すると、対策の優先度が見えてきます。</p>
+
+        <div class="matrix-container">
+            <span class="matrix-title">リスク評価マトリクス</span>
+            <div class="matrix-grid">
+                <!-- ヘッダー -->
+                <div style="grid-column:1/2; grid-row:1/2;"></div>
+                <div class="label-header" style="grid-column:2/3; grid-row:1/2;">確率：低</div>
+                <div class="label-header" style="grid-column:3/4; grid-row:1/2;">確率：中</div>
+                <div class="label-header" style="grid-column:4/5; grid-row:1/2;">確率：高</div>
+
+                <!-- 軸ラベル -->
+                <div class="axis-y-label">影響度</div>
+
+                <!-- Row: 高 -->
+                <div class="label-header" style="grid-column:1/2; grid-row:2/3;">高</div>
+                
+                <!-- B: 低・高 -->
+                <div class="matrix-cell priority-mid" style="grid-column:2/3; grid-row:2/3;">
+                    <div class="risk-badge type-b">B. サーバ故障</div>
+                    <div class="risk-badge type-d" style="margin-top:5px;">D. 地震・災害</div>
+                </div>
+                
+                <!-- 空き・高 -->
+                <div class="matrix-cell priority-high" style="grid-column:3/5; grid-row:2/3;">
+                    <small style="color:#d32f2f; font-weight:bold;">最優先ゾーン</small>
+                </div>
+
+                <!-- Row: 中 -->
+                <div class="label-header" style="grid-column:1/2; grid-row:3/4;">中</div>
+                
+                <!-- 空き・中 -->
+                <div class="matrix-cell priority-low" style="grid-column:2/3; grid-row:3/4;">
+                    <small style="color:#aaa;">監視対象</small>
+                </div>
+                
+                <!-- C: 中・中 -->
+                <div class="matrix-cell priority-mid" style="grid-column:3/4; grid-row:3/4;">
+                    <div class="risk-badge type-c">C. ウイルス</div>
+                </div>
+                
+                <!-- A: 高・中 -->
+                <div class="matrix-cell priority-mid" style="grid-column:4/5; grid-row:3/4;">
+                    <div class="risk-badge type-a">A. パスワード</div>
+                </div>
+
+                <!-- X軸ラベル -->
+                <div class="axis-x-label">発生確率（頻度）</div>
+            </div>
+        </div>
+
+        <h2>4. 優先順位と対策のアプローチ</h2>
+        <p>マトリクス上の位置によって、取るべき対策のアプローチが異なります。</p>
+
+        <div style="background:var(--bg-color); padding:1.5rem; border:1px solid var(--line-color); border-radius:4px;">
+            <h3 style="margin-top:0; font-size:1.1rem;">推奨される対策順序</h3>
+            <div class="priority-flow">
+                <span class="p-step">① C. ウイルス</span>
+                <span class="p-arrow">→</span>
+                <span class="p-step">② A. パスワード</span>
+                <span class="p-arrow">→</span>
+                <span class="p-step">③ B. サーバ故障</span>
+                <span class="p-arrow">→</span>
+                <span class="p-step">④ D. 地震</span>
+            </div>
+            
+            <ul style="margin-top:1.5rem; font-size:0.95rem;">
+                <li><strong>C (中×中)：</strong> 頻度も被害もそこそこあるため、日常的な脅威として<strong>最優先</strong>で対策（ウイルス対策ソフト等）。</li>
+                <li><strong>A (高×中)：</strong> 頻度が高いものは、教育やルール作りで「発生させない」対策が有効。</li>
+                <li><strong>B (低×高)：</strong> めったに起きないが影響が大きいものは、保険や冗長化（予備機）で「起きたとき」に備える。</li>
+                <li><strong>D (低×極高)：</strong> BCP（事業継続計画）の範疇。コストがかかるため経営判断が必要。</li>
+            </ul>
+        </div>
+
+        <h2>まとめ：試験対策ワンポイント</h2>
+        <p>ITパスポートなどの試験でリスクの問題が出たら、以下のフレーズを思い出してください。</p>
+        <blockquote>
+            <strong>「起きやすくて、起きたら困るものから潰す」</strong>
+        </blockquote>
+        <p>まずは右上のゾーン（高×高）を探し、無ければその周辺（中×中など）にある現実的なリスクを選びます。「地震」のような巨大リスクよりも、「ウイルス」のような身近なリスクの方が、現場レベルでの対応優先度は高くなる傾向があります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T15:06:16+09:00",
+    "title": "DaaSのランタイムの違いを比較",
+    "summary": "DaaSにおける永続型と非永続型のアーキテクチャの違いを解説します。各方式のメリット・デメリットも紹介。",
+    "tags": [
+      "DaaS",
+      "仮想デスクトップ",
+      "ランタイム",
+      "クラウド",
+      "アーキテクチャ"
+    ],
+    "dir": "2026-01-22_daas-runtime-comparison",
+    "repo_path": "/docs/2026-01-22_daas-runtime-comparison/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_daas-runtime-comparison"
+  },
+  {
     "timestamp": "2026-01-22T14:57:33+09:00",
     "title": "DaaSとVDIの仕組みを解説",
     "summary": "DaaS（Desktop as a Service）について、クラウド上でのVDIの仕組みや提供フローを詳しく説明します。メリットや従来のVDIとの違いについても触れています。",

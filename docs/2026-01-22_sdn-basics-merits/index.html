@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>SDNの基本とメリット：ネットワークをソフトウェアで操る技術 - Sidenote</title>
+  <meta name="description" content="ネットワーク機器の「制御」と「転送」を分離し、ソフトウェアで一元管理する技術「SDN」を解説。従来型ネットワークとの違いや、OpenFlowなどの仕組みを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="SDNの基本とメリット：ネットワークをソフトウェアで操る技術" />
+  <meta property="og:description" content="機器ごとの設定はもう不要？「制御の集中管理」がもたらす革命。" />
+  <meta property="og:url" content="https://example.com/articles/sdn-basics-merits.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* SDN構成図 */
+    .sdn-structure {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .plane-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 1rem;
+      border: 2px dashed #b0bec5;
+      background: #eceff1;
+      border-radius: 8px;
+      position: relative;
+      text-align: center;
+    }
+
+    .plane-label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #78909c;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* コントローラ（制御プレーン） */
+    .controller-box {
+      background: #fff;
+      border: 2px solid #1976d2;
+      padding: 1rem;
+      width: 60%;
+      margin: 0 auto;
+      font-weight: bold;
+      color: #0d47a1;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* スイッチ（データプレーン） */
+    .switch-container {
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    .switch-box {
+      background: #fff;
+      border: 2px solid #455a64;
+      padding: 0.8rem;
+      width: 30%;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    .switch-box::before {
+      content: "⇄";
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-sub);
+    }
+
+    /* 制御の矢印 */
+    .control-flow {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      width: 100%;
+      height: 40px;
+      position: relative;
+    }
+    
+    .arrow-line {
+      width: 2px;
+      height: 100%;
+      background: #1976d2;
+      position: relative;
+    }
+    .arrow-line::after {
+      content: "▼";
+      position: absolute;
+      bottom: -5px;
+      left: -5px;
+      color: #1976d2;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .comparison-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 30%;
+    }
+
+    /* メリットカード */
+    .merit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .merit-card {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 1.2rem;
+      border-top: 4px solid var(--text-main);
+    }
+
+    .merit-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-22">2026.01.22 / ネットワーク技術</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">SDNの基本とメリット：ネットワークをソフトウェアで操る技術</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#SDN</li>
+            <li>#ネットワーク</li>
+            <li>#仮想化</li>
+            <li>#OpenFlow</li>
+            <li>#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>従来のネットワーク管理は、ルータやスイッチを1台ずつケーブルで繋ぎ、個別に設定を行う「手作業」の世界でした。これを根本から変えるのが<strong>SDN（Software Defined Networking）</strong>です。</p>
+        <p>SDNとは、ネットワークの構成や機能を物理的な配線に縛られず、ソフトウェア上で集中的に制御・管理する技術のことです。</p>
+
+        <h2>1. 仕組み：制御と転送の分離</h2>
+        <p>SDNの最大の特徴は、ネットワーク機器の機能を「頭脳（制御プレーン）」と「手足（データプレーン）」に切り離した点にあります。</p>
+
+        <div class="sdn-structure">
+            <p style="font-size:0.85rem; font-weight:bold; margin-bottom:0.5rem;">管理者 / アプリケーション</p>
+            <div style="font-size:1.5rem; line-height:1; color:var(--text-sub);">⬇ API</div>
+
+            <!-- 制御プレーン -->
+            <div class="plane-box" style="border-color:#90caf9; background:#e3f2fd;">
+                <span class="plane-label" style="background:#1976d2;">制御プレーン (Control Plane)</span>
+                <div class="controller-box">
+                    SDNコントローラ<br>
+                    <small>（全機器の動きを一元管理）</small>
+                </div>
+            </div>
+
+            <!-- 制御の矢印 -->
+            <div class="control-flow">
+                <div class="arrow-line"></div>
+                <div class="arrow-line"></div>
+                <div class="arrow-line"></div>
+            </div>
+
+            <!-- データプレーン -->
+            <div class="plane-box">
+                <span class="plane-label">データプレーン (Data Plane)</span>
+                <div class="switch-container">
+                    <div class="switch-box">スイッチA</div>
+                    <div class="switch-box">スイッチB</div>
+                    <div class="switch-box">スイッチC</div>
+                </div>
+                <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--text-sub);">
+                    指示通りにパケットを転送するだけ
+                </p>
+            </div>
+        </div>
+
+        <p>従来はスイッチ1台1台に「頭脳」が入っていましたが、SDNでは頭脳を「コントローラ」に集約し、スイッチは「手足」として単純な転送処理に専念させます。</p>
+
+        <h2>2. 従来型ネットワークとの比較</h2>
+        <p>この構造の変化により、運用の手間が劇的に変わります。</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>比較項目</th>
+                    <th>従来型ネットワーク</th>
+                    <th>SDN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>制御の場所</strong></td>
+                    <td>各機器に分散</td>
+                    <td>コントローラに集中</td>
+                </tr>
+                <tr>
+                    <td><strong>設定方法</strong></td>
+                    <td>機器ごとにコマンド入力<br>（手作業）</td>
+                    <td>ソフトから一括設定<br>（自動化可能）</td>
+                </tr>
+                <tr>
+                    <td><strong>構成変更</strong></td>
+                    <td>物理配線の変更が必要な場合も</td>
+                    <td>ソフト設定のみで即時反映</td>
+                </tr>
+                <tr>
+                    <td><strong>柔軟性</strong></td>
+                    <td>低い（硬直的）</td>
+                    <td>高い（プログラマブル）</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. 導入のメリット</h2>
+        <p>SDNを導入することで、具体的にどのような恩恵があるのでしょうか。</p>
+
+        <div class="merit-grid">
+            <div class="merit-card">
+                <span class="merit-title">① 運用コストの大幅削減</span>
+                <p>設定変更のために現地のサーバルームへ行く必要がなくなります。数百台のスイッチ設定も、コントローラから一瞬で配布可能です。</p>
+            </div>
+            <div class="merit-card">
+                <span class="merit-title">② 柔軟な構成変更</span>
+                <p>「昼は営業部に帯域を割り当て、夜はバックアップ用に回す」といった動的な制御が、物理配線を変えずに実現できます。</p>
+            </div>
+            <div class="merit-card">
+                <span class="merit-title">③ セキュリティ強化</span>
+                <p>怪しい通信を検知した瞬間、コントローラが全スイッチに「その端末を遮断せよ」と命令を出すなど、即応性の高い対策が可能です。</p>
+            </div>
+        </div>
+
+        <h2>4. 関連用語：SDNとNFVの違い</h2>
+        <p>試験でよく混同されるのが「NFV（Network Functions Virtualization）」です。</p>
+        <ul>
+            <li><strong>SDN：</strong> ネットワークの「制御」をソフトウェア化すること。（司令塔の作り方）</li>
+            <li><strong>NFV：</strong> ルータやファイアウォールなどの「専用機器」を、汎用サーバ上の「仮想ソフト」として動かすこと。（ハードウェアの仮想化）</li>
+        </ul>
+        <p>両者は相性が良く、セットで使われることが多いですが、定義としては別物です。</p>
+
+        <h2>まとめ</h2>
+        <p>SDNを一言で言えば、<strong>「ネットワークをプログラミング可能にする技術」</strong>です。</p>
+        <p>「機器ごとの手動設定」から「ソフトウェアによる集中制御」へ。これが現代のクラウドや大規模データセンターを支えるインフラの常識となっています。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

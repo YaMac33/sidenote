@@ -1,5 +1,22 @@
 [
   {
+    "timestamp": "2026-01-22T14:19:34+09:00",
+    "title": "クラウドサービスの管理責任と範囲",
+    "summary": "クラウドサービスにおけるユーザーの管理責任と事業者の提供範囲を責任分界点モデルで整理した記事です。IaaSからFaaSまで、各サービスの特徴について説明します。",
+    "tags": [
+      "IaaS",
+      "PaaS",
+      "SaaS",
+      "FaaS",
+      "CaaS",
+      "クラウド",
+      "管理責任"
+    ],
+    "dir": "2026-01-22_cloud-responsibility-model",
+    "repo_path": "/docs/2026-01-22_cloud-responsibility-model/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_cloud-responsibility-model"
+  },
+  {
     "timestamp": "2026-01-22T08:02:23+09:00",
     "title": "不正アクセス禁止法の詳細と要件",
     "summary": "不正アクセス禁止法は単にコンピュータへの侵入を取り締まるだけではなく、個人情報の不正取得や提供に関する行為も規制対象です。法の成立要件と禁止行為を明確に解説します。",

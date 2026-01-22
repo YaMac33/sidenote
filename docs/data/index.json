@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T14:49:41+09:00",
+    "title": "DaaSにおけるランタイムの理解",
+    "summary": "DaaSとVDIの関係をわかりやすく解説します。ランタイムの重要性を理解することで、DaaSの本質が見えてきます。",
+    "tags": [
+      "DaaS",
+      "VDI",
+      "ランタイム",
+      "クラウド",
+      "仮想デスクトップ"
+    ],
+    "dir": "2026-01-22_daas-runtime-vdi-relationship",
+    "repo_path": "/docs/2026-01-22_daas-runtime-vdi-relationship/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_daas-runtime-vdi-relationship"
+  },
+  {
     "timestamp": "2026-01-22T14:19:34+09:00",
     "title": "クラウドサービスの管理責任と範囲",
     "summary": "クラウドサービスにおけるユーザーの管理責任と事業者の提供範囲を責任分界点モデルで整理した記事です。IaaSからFaaSまで、各サービスの特徴について説明します。",

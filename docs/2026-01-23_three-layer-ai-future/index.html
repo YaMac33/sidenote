@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>三層分離とAI特区の未来：2030年の行政ネットワーク構想 - Sidenote</title>
+  <meta name="description" content="自治体ネットワークの「三層分離」は今後どう変わるのか？2030年に向けたロードマップと、セキュリティを維持しつつAIを活用するための現実解「AI特区VDI」構想を図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="三層分離とAI特区の未来：2030年の行政ネットワーク構想" />
+  <meta property="og:description" content="物理的な遮断から、データ中心の制御へ。行政DXを阻む壁をどう乗り越えるか。" />
+  <meta property="og:url" content="https://example.com/articles/three-layer-ai-future.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* タイムライン図 */
+    .timeline-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+    }
+
+    .timeline-step {
+      position: relative;
+      padding-left: 2rem;
+      margin-bottom: 2rem;
+      border-left: 2px solid var(--text-sub);
+    }
+    .timeline-step:last-child {
+      border-left: 2px dashed var(--text-sub);
+      margin-bottom: 0;
+    }
+
+    .step-marker {
+      position: absolute;
+      left: -9px;
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: var(--text-main);
+      border-radius: 50%;
+      border: 3px solid var(--code-bg);
+    }
+
+    .step-year {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--text-sub);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .step-content {
+      background: var(--bg-color);
+      padding: 1rem;
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+    }
+
+    .step-title {
+      font-weight: bold;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      color: var(--text-main);
+    }
+
+    /* AI特区VDI 構成図 */
+    .arch-diagram {
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      background: #f5f7fa; /* 薄い青グレー */
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #cfd8dc;
+    }
+
+    .zone-box {
+      width: 100%;
+      max-width: 600px;
+      padding: 1rem;
+      position: relative;
+      background: #fff;
+      border: 2px solid;
+    }
+
+    /* LGWANゾーン */
+    .zone-lgwan {
+      border-color: #4caf50;
+      background: #e8f5e9;
+    }
+    .zone-lgwan::before {
+      content: "LGWAN系（安全地帯）";
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #4caf50;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* インターネットゾーン */
+    .zone-internet {
+      border-color: #ef5350;
+      background: #ffebee;
+    }
+    .zone-internet::before {
+      content: "インターネット系（AI特区）";
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #ef5350;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* 外部クラウド */
+    .zone-cloud {
+      border-style: dashed;
+      border-color: #607d8b;
+      background: #eceff1;
+      text-align: center;
+    }
+
+    .comp-box {
+      background: #fff;
+      border: 1px solid #333;
+      padding: 0.8rem;
+      text-align: center;
+      margin: 0.5rem 0;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    .connection-line {
+      height: 30px;
+      width: 2px;
+      background: #333;
+      margin: 0 auto;
+      position: relative;
+    }
+    .connection-line::after {
+      content: "▼";
+      position: absolute;
+      bottom: -10px;
+      left: -5px;
+    }
+
+    .rdp-arrow {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin: 0.5rem 0;
+      font-weight: bold;
+    }
+    .rdp-arrow::before { content: "⬇ 画面転送 (RDP)"; display: block; }
+
+    /* データ分類テーブル */
+    .data-class-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .data-class-table th, .data-class-table td {
+      border: 1px solid var(--line-color);
+      padding: 0.8rem;
+      vertical-align: top;
+    }
+    .data-class-table th {
+      background: var(--code-bg);
+      text-align: left;
+      width: 20%;
+    }
+    .status-ok { color: #2e7d32; font-weight: bold; }
+    .status-ng { color: #d32f2f; font-weight: bold; }
+    .status-cond { color: #f57f17; font-weight: bold; }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-23">2026.01.23 / 行政DX・セキュリティ</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">三層分離とAI特区の未来：2030年の行政ネットワーク構想</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#三層分離</li>
+            <li>#AI特区</li>
+            <li>#自治体DX</li>
+            <li>#ゼロトラスト</li>
+            <li>#セキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>自治体のセキュリティ対策である「三層分離（LGWAN接続系、インターネット接続系、マイナンバー利用事務系の分離）」は、強固な安全性を誇る反面、クラウドやAIの活用を阻む大きな壁となってきました。</p>
+        <p>しかし、技術と時代の変化により、そのあり方は今後5年で劇的に変わろうとしています。物理的な遮断から、論理的かつデータ中心の制御へ。2030年に向けたロードマップと、現実的な解としての「AI特区」構想を解説します。</p>
+
+        <h2>1. 2030年へのロードマップ</h2>
+        <p>三層分離は「廃止」されるのではなく、「形を変えて（概念化して）」残ります。今後予想される3つのフェーズを見てみましょう。</p>
+
+        <div class="timeline-container">
+            <!-- Phase 1 -->
+            <div class="timeline-step">
+                <div class="step-marker"></div>
+                <span class="step-year">現在 〜 2027年頃</span>
+                <div class="step-content">
+                    <span class="step-title">フェーズ1：分離維持と「禁止」の時代</span>
+                    <p>ランサムウェア被害への懸念から、現状の強力な分離（ブラウザ分離など）が維持されます。AI利用については「リスクが説明できないため禁止」という判断が主流です。</p>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="timeline-step">
+                <div class="step-marker"></div>
+                <span class="step-year">2028年 〜 2029年頃</span>
+                <div class="step-content">
+                    <span class="step-title">フェーズ2：「AI特区」と条件付き通信</span>
+                    <p>全職員の禁止は生産性低下を招くと悟り、一部の部署や用途に限定した<strong>「AI特区VDI」</strong>が登場します。APIゲートウェイ経由での監視・制御を条件に、外部AIとの通信が許可され始めます。</p>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="timeline-step">
+                <div class="step-marker"></div>
+                <span class="step-year">2030年 〜</span>
+                <div class="step-content">
+                    <span class="step-title">フェーズ3：三層分離の「概念化」</span>
+                    <p>物理的なネットワーク分離よりも、<strong>「データの中身（重要度）」に応じた制御（ゼロトラスト）</strong>が主流になります。三層分離はネットワーク図上の線ではなく、アクセス権限のルールとして残ります。</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>2. 現実解としての「AI特区VDI」構想</h2>
+        <p>フェーズ2で主流となるのが、三層分離の原則（LGWANから直接インターネットに出ない）を守りつつ、AIを活用するための構成です。</p>
+        <p>ポイントは、インターネット系ネットワークの中に<strong>「AIを使うためだけの隔離された作業場（特区）」</strong>を作ることです。</p>
+
+        <div class="arch-diagram">
+            <!-- 外部AI -->
+            <div class="zone-box zone-cloud">
+                <span style="font-weight:bold; color:#546e7a;">外部AIサービス</span><br>
+                (OpenAI / Azure OpenAI 等)
+            </div>
+
+            <div class="connection-line"></div>
+
+            <!-- インターネット系 -->
+            <div class="zone-box zone-internet">
+                <div class="comp-box" style="background:#fff3e0; border-color:#e65100;">
+                    AI Gateway (関所)<br>
+                    <small>ログ取得 / マスキング / 宛先制御</small>
+                </div>
+                <div class="connection-line"></div>
+                <div class="comp-box">
+                    AI特区 VDI (仮想PC)<br>
+                    <small>ここでブラウザやツールを操作</small>
+                </div>
+            </div>
+
+            <!-- RDP接続 -->
+            <div class="rdp-arrow"></div>
+
+            <!-- LGWAN系 -->
+            <div class="zone-box zone-lgwan">
+                <div class="comp-box">
+                    職員端末 (LGWAN接続)<br>
+                    <small>直接インターネットには出ない</small>
+                </div>
+            </div>
+        </div>
+
+        <h3>この構成のメリット</h3>
+        <ul>
+            <li><strong>LGWANを守れる：</strong> 職員端末はインターネットに直接触れず、画面を見ているだけです。</li>
+            <li><strong>情報の出口を絞れる：</strong> AI特区からの通信は「AI Gateway」一本に絞り、そこでログ取得や個人情報のマスキングを強制します。</li>
+        </ul>
+
+        <h2>3. 「使うか否か」ではなく「何を食わせるか」</h2>
+        <p>今後のセキュリティ制御の本質は、ネットワークの場所ではなく<strong>「データの重要度（データ分類）」</strong>に移ります。</p>
+        <p>AI特区運用における、現実的なデータ取り扱いのルール例です。</p>
+
+        <table class="data-class-table">
+            <thead>
+                <tr>
+                    <th>重要度</th>
+                    <th>データの種類</th>
+                    <th>AI利用ルール</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>分類A</strong><br>(高)</td>
+                    <td>マイナンバー、要配慮個人情報、未公開の機密情報</td>
+                    <td class="status-ng">× 入力禁止</td>
+                </tr>
+                <tr>
+                    <td><strong>分類B</strong><br>(中)</td>
+                    <td>一般的な行政文書、内部会議の議事録、個人情報を含まない相談記録</td>
+                    <td class="status-cond">△ 条件付き許可<br><small>（マスキング処理＋承認＋ログ記録）</small></td>
+                </tr>
+                <tr>
+                    <td><strong>分類C</strong><br>(低)</td>
+                    <td>公開情報、ホームページ掲載文、定型的な挨拶文</td>
+                    <td class="status-ok">○ 自由利用</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>「セキュリティか、利便性か」の二元論ではなく、<strong>「安全な場所（特区）を作り、そこでの振る舞いをルール化する」</strong>アプローチが、これからの行政DXの鍵となります。</p>
+        <p>2030年には、AIは特別なツールではなく、OSの一部として溶け込んでいくでしょう。その時までに、「安全に使いこなすための組織能力（ガバナンス）」を養っておく必要があります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

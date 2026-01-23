@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-23T17:41:13+09:00",
+    "title": "三層分離とAI特区の未来",
+    "summary": "2030年に向けての行政ネットワークの変革を考察。セキュリティを維持しつつAIを活用する方法を解説します。",
+    "tags": [
+      "三層分離",
+      "AI特区",
+      "自治体DX",
+      "ゼロトラスト",
+      "セキュリティ"
+    ],
+    "dir": "2026-01-23_three-layer-ai-future",
+    "repo_path": "/docs/2026-01-23_three-layer-ai-future/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-23_three-layer-ai-future"
+  },
+  {
     "timestamp": "2026-01-23T08:32:35+09:00",
     "title": "6Gネットワークの知能基盤の未来",
     "summary": "6Gは単なる高速通信ではなく、AIを活用した知能を備えた通信基盤の全体像を描いています。仮想分割や自律制御の進化によって、情報伝達の新たな形を提示します。",

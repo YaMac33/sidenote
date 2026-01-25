@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>資格を活かすための「忘れ方」：知識を腐らせない再起動力の鍛え方 - Sidenote</title>
+  <meta name="description" content="せっかく取った資格の知識を忘れてしまうのは失敗ではありません。重要なのは「即答力」ではなく、必要な時に調べ直せる「再起動力」。知識をインデックス化し、AI時代に活用するための現実的なアプローチを解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="資格を活かすための「忘れ方」：知識を腐らせない再起動力の鍛え方" />
+  <meta property="og:description" content="忘れてもいい。「どこにあるか」さえ覚えていれば。" />
+  <meta property="og:url" content="https://example.com/articles/forgetting-skills.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 知識の状態比較図 */
+    .knowledge-state-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .state-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .state-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--line-color);
+      flex-shrink: 0;
+    }
+
+    .state-content {
+      flex: 1;
+    }
+
+    .state-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .state-desc {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    /* 悪い例 */
+    .bad-state .state-icon {
+      border-color: #ef5350;
+      color: #ef5350;
+      background: #ffebee;
+    }
+    .bad-state .state-title { color: #c62828; }
+
+    /* 良い例 */
+    .good-state .state-icon {
+      border-color: #2e7d32;
+      color: #2e7d32;
+      background: #e8f5e9;
+    }
+    .good-state .state-title { color: #1b5e20; }
+
+    /* 記憶のインデックス化イメージ */
+    .index-visualization {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+      position: relative;
+      height: 180px;
+    }
+
+    .brain-box {
+      width: 120px;
+      height: 120px;
+      border: 2px solid var(--text-main);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: var(--bg-color);
+      z-index: 2;
+    }
+
+    .link-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 140px;
+      height: 2px;
+      background: var(--text-sub);
+      transform-origin: left center;
+      z-index: 1;
+    }
+
+    .storage-node {
+      position: absolute;
+      padding: 0.5rem;
+      background: #fff;
+      border: 1px solid var(--text-sub);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    /* 配置 */
+    .node-1 { top: 10px; left: 10px; }
+    .node-2 { top: 10px; right: 10px; }
+    .node-3 { bottom: 10px; left: 20px; }
+    .node-4 { bottom: 10px; right: 20px; }
+
+    /* AI活用フロー */
+    .ai-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--bg-color);
+      padding: 1.5rem;
+      border: 1px dashed var(--text-main);
+      margin-top: 1rem;
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .flow-step {
+      background: var(--text-main);
+      color: #fff;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .flow-text {
+      font-size: 0.95rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-26">2026.01.26 / 学習法・キャリア</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">資格を活かすための「忘れ方」：知識を腐らせない再起動力の鍛え方</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#資格活用</li>
+            <li>#記憶術</li>
+            <li>#アウトプット</li>
+            <li>#思考法</li>
+            <li>#再起動力</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>苦労して取得した資格の知識も、実務で使わなければ徐々に忘れていきます。「せっかく覚えたのに無駄になったのではないか」と不安になるのは当然です。</p>
+        <p>しかし、結論から言えば<strong>「忘れるのは正常」</strong>です。重要なのは、知識を常時記憶しておくことではなく、必要な時にすぐに思い出せる回路（インデックス）を作っておくことです。</p>
+
+        <h2>「忘れる」は失敗ではない</h2>
+        <p>人間の脳は、使わない知識を忘れるように設計されています。医師でも専門外の疾患は忘れますし、建築士でも普段使わない構造計算式は忘れます。</p>
+        <p>問題なのは「忘れること」自体ではなく、<strong>「思い出す手がかり」まで失ってしまうこと</strong>です。</p>
+
+        <div class="knowledge-state-container">
+            <!-- 悪い状態 -->
+            <div class="state-row bad-state">
+                <div class="state-icon">✕</div>
+                <div class="state-content">
+                    <span class="state-title">完全忘却（消失）</span>
+                    <span class="state-desc">「聞いたことある気もするけど...」レベル。ゼロから勉強し直しになるため、過去の時間が無駄になる。</span>
+                </div>
+            </div>
+            
+            <!-- 良い状態 -->
+            <div class="state-row good-state">
+                <div class="state-icon">◎</div>
+                <div class="state-content">
+                    <span class="state-title">再起動可能（スリープ）</span>
+                    <span class="state-desc">「あ、あの話だ」と気づき、どこを見れば正解があるか知っている状態。5分の検索で知識が復活する。</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>目指すべきは「即答力」より「再起動力」</h2>
+        <p>資格学習のゴールを「いつでも即答できる状態」に設定すると、維持コストが高すぎて破綻します。</p>
+        <p>実務で直結しない資格の場合、目指すべきは<strong>「検索インデックス（索引）が脳に残っている状態」</strong>です。</p>
+
+        <div class="index-visualization">
+            <!-- 脳 -->
+            <div class="brain-box">脳内<br>INDEX</div>
+            
+            <!-- リンク線 -->
+            <div class="link-line" style="transform: rotate(-30deg); width: 100px;"></div>
+            <div class="link-line" style="transform: rotate(30deg); width: 100px;"></div>
+            <div class="link-line" style="transform: rotate(150deg); width: 100px;"></div>
+            <div class="link-line" style="transform: rotate(210deg); width: 100px;"></div>
+
+            <!-- 外部ストレージ -->
+            <div class="storage-node node-1">ブログ記事</div>
+            <div class="storage-node node-2">自作メモ</div>
+            <div class="storage-node node-3">あの書籍</div>
+            <div class="storage-node node-4">Notion</div>
+        </div>
+        <p style="text-align:center; font-size:0.9rem; color:var(--text-sub);">
+            詳細は外部（メモやブログ）に置いておき、脳内には「場所」だけを記憶する。
+        </p>
+
+        <h2>知識を「保存」する3つの技術</h2>
+        <p>では、どのようにして「再起動可能」な状態で知識を保存すればよいのでしょうか。現実的な3つのアプローチを紹介します。</p>
+
+        <h3>1. 3行メモ（自分専用トリガー）</h3>
+        <p>教科書をまとめる必要はありません。「3行で言い切る」自分用のメモを残します。</p>
+        <blockquote>
+            <strong>例：不正アクセス禁止法</strong><br>
+            ・侵入だけでなく、パスワードを教える・保管する行為もNG。<br>
+            ・ウイルス作成は対象外（刑法）。<br>
+            ・「助長行為」というキーワードに注意。
+        </blockquote>
+        <p>これだけで、将来この法律に触れたとき、記憶が一気に蘇ります。</p>
+
+        <h3>2. 誰かに説明する前提のアウトプット</h3>
+        <p>ブログ、Notion、社内Wikiなど形式は問いません。「未来の自分」あるいは「他人」に向けて説明する文章を書きます。</p>
+        <p>「AIに説明させて、それを修正して記事にする」というプロセスは、理解の穴を見つけ、記憶を定着させるための最強の手段です。</p>
+
+        <h3>3. 使う場面を「1つだけ」決める</h3>
+        <p>全ての知識を使おうとすると挫折します。「この知識は、この場面でだけ使う」と決めてしまいます。</p>
+        <ul>
+            <li><strong>ITパスポート：</strong>ベンダーとの打ち合わせで用語が出たときだけ思い出す。</li>
+            <li><strong>簿記：</strong>見積書の違和感に気づくためだけに使う。</li>
+        </ul>
+
+        <h2>AI時代の新しい活用法</h2>
+        <p>AIの登場により、資格知識は「自分で作業するため」のものから、<strong>「AIへの的確な指示（仕様書）を書くため」</strong>のものへと変化しています。</p>
+
+        <div class="ai-flow">
+            <div class="flow-item">
+                <div class="flow-step">1</div>
+                <div class="flow-text">
+                    <strong>資格知識：</strong>「何が正しいか」の基準を持っている。
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-step">2</div>
+                <div class="flow-text">
+                    <strong>AIへの指示：</strong>「〇〇法の基準に従ってチェックして」と指示できる。
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-step">3</div>
+                <div class="flow-text">
+                    <strong>結果の評価：</strong>AIの出力が合っているか判断できる。
+                </div>
+            </div>
+        </div>
+
+        <p>知識がない人はAIに正しい指示が出せません。忘れていても「用語と概念」さえ残っていれば、AIを使って高度な実務をこなすことができます。</p>
+
+        <h2>まとめ</h2>
+        <p>「忘れる」ことに罪悪感を持つ必要はありません。資格学習の真価は、知識の暗記ではなく、<strong>「その分野特有の思考の枠組み（OS）」</strong>をインストールすることにあります。</p>
+        <p>細部は忘れても、OSさえ残っていれば、新しいアプリ（知識）はいつでもインストール可能です。安心して「良い忘れ方」を実践してください。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

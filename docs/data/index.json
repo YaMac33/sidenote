@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-26T05:56:15+09:00",
+    "title": "資格知識を活かすための再起動力",
+    "summary": "資格を取得した知識を忘れにくくする方法や、必要なときに再び活用するためのアプローチを解説します。忘れ方ではなく、思い出せる力を鍛えることが重要です。",
+    "tags": [
+      "資格活用",
+      "記憶術",
+      "知識整理",
+      "思考法",
+      "再起動力"
+    ],
+    "dir": "2026-01-26_knowledge-reboot-techniques",
+    "repo_path": "/docs/2026-01-26_knowledge-reboot-techniques/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-26_knowledge-reboot-techniques"
+  },
+  {
     "timestamp": "2026-01-23T17:41:13+09:00",
     "title": "三層分離とAI特区の未来",
     "summary": "2030年に向けての行政ネットワークの変革を考察。セキュリティを維持しつつAIを活用する方法を解説します。",

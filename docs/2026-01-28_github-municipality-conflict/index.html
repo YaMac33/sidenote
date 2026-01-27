@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>GitHubと自治体業務の相性：なぜ「構造的に」噛み合わないのか？ - Sidenote</title>
+  <meta name="description" content="エンジニアにとっての神器「GitHub」が、なぜ自治体業務では使いにくいのか。感覚的な「慣れ」の問題ではなく、セキュリティ思想や決裁文化といった「構造的な対立」を図解で紐解きます。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="GitHubと自治体業務の相性：なぜ「構造的に」噛み合わないのか？" />
+  <meta property="og:description" content="ローカル至上主義 vs 中央統制。混ぜるな危険の理由と解決策。" />
+  <meta property="og:url" content="https://example.com/articles/github-municipality-conflict.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 思想の対立図 */
+    .conflict-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .conflict-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 600px;
+      align-items: center;
+    }
+
+    .culture-box {
+      flex: 1;
+      padding: 1.5rem;
+      border: 2px solid;
+      border-radius: 8px;
+      text-align: center;
+      background: var(--bg-color);
+      position: relative;
+    }
+
+    /* GitHub文化 */
+    .culture-git {
+      border-color: #333;
+      color: #333;
+    }
+    .culture-git::before {
+      content: "GitHub思想";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 0 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* 自治体文化 */
+    .culture-gov {
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+    .culture-gov::before {
+      content: "自治体思想";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2e7d32;
+      color: #fff;
+      padding: 0 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .vs-icon {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #d32f2f;
+      margin: 0 1rem;
+    }
+
+    .culture-desc {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+
+    /* 端末依存の図 */
+    .device-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+      padding: 1rem;
+      background: #fff;
+      border: 1px dashed var(--line-color);
+    }
+
+    .device-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .icon-box {
+      width: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .flow-bar {
+      flex: 1;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .flow-bar.blackbox {
+      background: repeating-linear-gradient(
+        45deg,
+        #607d8b,
+        #607d8b 10px,
+        #546e7a 10px,
+        #546e7a 20px
+      );
+    }
+
+    .flow-label {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    /* 比較テーブル */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .comp-table th, .comp-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .comp-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 20%;
+    }
+    .status-bad { color: #d32f2f; font-weight: bold; }
+    .status-good { color: #2e7d32; font-weight: bold; }
+
+    /* 三層分離の壁 */
+    .network-wall {
+      position: relative;
+      padding: 2rem;
+      background: #ffebee;
+      border: 2px solid #d32f2f;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .network-wall::after {
+      content: "🔥 三層分離の壁";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #d32f2f;
+      color: #fff;
+      padding: 0 1rem;
+      font-weight: bold;
+    }
+
+    .wall-content {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .side-lgwan { color: #2e7d32; font-weight: bold; }
+    .side-internet { color: #333; font-weight: bold; }
+    
+    .wall-barrier {
+      font-size: 2rem;
+      color: #d32f2f;
+    }
+
+    /* 翻訳カード */
+    .translate-box {
+      background: #e3f2fd;
+      border-left: 5px solid #1976d2;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    .trans-title {
+      font-weight: bold;
+      color: #0d47a1;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">2026.01.28 / 自治体DX・組織論</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">GitHubと自治体業務の相性：なぜ「構造的に」噛み合わないのか？</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#GitHub</li>
+            <li>#自治体</li>
+            <li>#業務改善</li>
+            <li>#組織文化</li>
+            <li>#情報セキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>エンジニアにとってGitHubは「なくてはならないインフラ」ですが、自治体業務においては「導入が極めて難しいツール」の一つです。</p>
+        <p>これは単に職員がITに不慣れだからではありません。GitHubが前提とする「分散管理」の思想と、自治体が守るべき「中央統制」の思想が、構造的に対立しているからです。</p>
+
+        <h2>1. 構造的な衝突：ローカル vs 中央</h2>
+        <p>Gitの基本は「ローカル（手元のPC）に全てをコピーし、手元で作業して、最後に送信（Push）する」ことです。しかし、これが自治体のセキュリティポリシーと真っ向から衝突します。</p>
+
+        <div class="conflict-container">
+            <div class="conflict-row">
+                <div class="culture-box culture-git">
+                    <span class="culture-desc">ローカル至上主義</span>
+                    <p style="font-size:0.85rem; margin-top:0.5rem;">
+                        手元に全履歴をコピー。<br>
+                        試行錯誤は個人の自由。
+                    </p>
+                </div>
+                <div class="vs-icon">VS</div>
+                <div class="culture-box culture-gov">
+                    <span class="culture-desc">端末信用ゼロ主義</span>
+                    <p style="font-size:0.85rem; margin-top:0.5rem;">
+                        端末にデータを残すな。<br>
+                        誰がいつ何をしたか監視せよ。
+                    </p>
+                </div>
+            </div>
+
+            <div class="device-flow">
+                <p style="font-weight:bold; font-size:0.9rem; text-align:center;">作業プロセスの比較</p>
+                <div class="device-step">
+                    <div class="icon-box">🏢</div>
+                    <div class="flow-bar" style="background:#4caf50;"></div>
+                    <div class="flow-label">従来のWebシステム（常にサーバで処理・ログ残る）</div>
+                </div>
+                <div class="device-step">
+                    <div class="icon-box">🐙</div>
+                    <div class="flow-bar blackbox"></div>
+                    <div class="flow-label">Git（Pushするまで手元作業はブラックボックス）</div>
+                </div>
+                <p style="font-size:0.8rem; color:#d32f2f; text-align:center;">
+                    ※「手元で何が起きているか見えない時間」が許されない
+                </p>
+            </div>
+        </div>
+
+        <h2>2. 「決裁文化」との不整合</h2>
+        <p>GitHubの強みである「途中経過の記録（Commit）」も、自治体の「決裁文化」とは相性が悪い要素です。</p>
+
+        <table class="comp-table">
+            <thead>
+                <tr>
+                    <th>観点</th>
+                    <th>GitHubの価値観</th>
+                    <th>自治体の価値観</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>途中経過</strong></td>
+                    <td><span class="status-good">価値あり</span><br>試行錯誤の履歴を残す</td>
+                    <td><span class="status-bad">ノイズ</span><br>決裁前の文書は「非公式」</td>
+                </tr>
+                <tr>
+                    <td><strong>変更管理</strong></td>
+                    <td>差分（Diff）で見る</td>
+                    <td>版数（第◯版）で見る</td>
+                </tr>
+                <tr>
+                    <td><strong>説明責任</strong></td>
+                    <td>「コードが全て」</td>
+                    <td>「誰が承認したか」</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>監査で「このCommitは正式な文書ですか？」と問われたとき、開発途中（WIP）のログが残っていることは、説明コストを増大させるリスクになります。</p>
+
+        <h2>3. 物理的な壁：三層分離</h2>
+        <p>さらに深刻なのがネットワークの問題です。多くの自治体では、業務端末（LGWAN系）からインターネットへの直接接続が禁止されています。</p>
+
+        <div class="network-wall">
+            <div class="wall-content">
+                <div class="side-lgwan">
+                    💻 業務端末<br>
+                    (LGWAN)
+                </div>
+                
+                <div class="wall-barrier">🚧 🚧 🚧</div>
+                
+                <div class="side-internet">
+                    ☁️ GitHub<br>
+                    (Internet)
+                </div>
+            </div>
+            <p style="margin-top:1rem; font-size:0.9rem;">
+                「git cloneできない」「sshが通らない」が日常。<br>
+                使うには専用のインターネット端末が必要になる。
+            </p>
+        </div>
+
+        <h2>4. それでも使うなら：「思想の翻訳」が必要</h2>
+        <p>自治体でGit的な管理を導入するには、GitHubの思想をそのまま持ち込むのではなく、自治体の文脈に「翻訳」して運用する必要があります。</p>
+
+        <div class="translate-box">
+            <span class="trans-title">💡 自治体向け「Git運用」の翻訳例</span>
+            <ul>
+                <li><strong>ローカル作業を禁止する：</strong><br>
+                PCにCloneせず、ブラウザ上のエディタ（GitHub Codespaces等）だけで完結させる。「端末にデータを残さない」原則を守る。</li>
+                <li><strong>人は「入力者」に徹する：</strong><br>
+                直接Commitするのではなく、フォーム入力やIssue起票を行い、CI/CD（自動化）が代わりにCommitする。「システムによる記録」にする。</li>
+                <li><strong>Mainブランチ＝決裁済み：</strong><br>
+                Pull Requestのマージを「承認行為」と定義し、Mainブランチのみを「公文書」として扱う。</li>
+            </ul>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>GitHubと自治体業務の相性が悪いのは、ツールの良し悪しではなく<strong>「自由（エンジニア）」と「統制（行政）」という正反対の目的を最大化しようとしているから</strong>です。</p>
+        <p>導入するなら、「エンジニアのように自由に使ってもらう」のではなく、「裏側でGitが動いているが、職員はそれを意識しない（Web画面で完結する）」仕組みを作ることが、最も現実的な解となるでしょう。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

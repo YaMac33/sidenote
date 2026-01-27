@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-28T08:14:44+09:00",
+    "title": "APIとBootstrapの技術的比較",
+    "summary": "BootstrapとAPIは異なる役割を持つが、再利用という共通の思想を持つ。技術的な違いを明確にし、開発の効率化を図る。",
+    "tags": [
+      "Bootstrap",
+      "API",
+      "Web開発",
+      "再利用",
+      "抽象化"
+    ],
+    "dir": "2026-01-28_api-bootstrap-comparison",
+    "repo_path": "/docs/2026-01-28_api-bootstrap-comparison/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-28_api-bootstrap-comparison"
+  },
+  {
     "timestamp": "2026-01-27T11:34:55+09:00",
     "title": "ハッシュの意味の違いを比較する",
     "summary": "IT用語の「ハッシュ値」、SNSの「ハッシュタグ」、食べ物の「ハッシュドポテト」の三つの違いを解説します。意外な共通点も紹介。",

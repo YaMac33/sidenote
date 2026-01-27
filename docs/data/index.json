@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-28T08:24:06+09:00",
+    "title": "GitHubと自治体業務の構造的対立",
+    "summary": "GitHubはエンジニアにとって必須のツールであるが、自治体業務では導入が困難である理由を探る。",
+    "tags": [
+      "GitHub",
+      "自治体",
+      "業務改善",
+      "組織文化",
+      "情報セキュリティ"
+    ],
+    "dir": "2026-01-28_github-municipality-conflict",
+    "repo_path": "/docs/2026-01-28_github-municipality-conflict/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-28_github-municipality-conflict"
+  },
+  {
     "timestamp": "2026-01-28T08:14:44+09:00",
     "title": "APIとBootstrapの技術的比較",
     "summary": "BootstrapとAPIは異なる役割を持つが、再利用という共通の思想を持つ。技術的な違いを明確にし、開発の効率化を図る。",

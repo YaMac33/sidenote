@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>APIとBootstrapの共通点と違い：技術は違うが「思想」は同じ - Sidenote</title>
+  <meta name="description" content="UIフレームワークのBootstrapと、機能連携のAPI。一見関係なさそうな両者ですが、「外部のリソースを借りて効率化する」という思想は共通しています。技術的な違いと、根底にある「再利用」の考え方を図解します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="APIとBootstrapの共通点と違い：技術は違うが「思想」は同じ" />
+  <meta property="og:description" content="見た目を借りるか、頭脳を借りるか。エンジニアの「サボる技術」の本質。" />
+  <meta property="og:url" content="https://example.com/articles/api-bootstrap-comparison.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 概念比較：左右対比 */
+    .concept-compare {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+    @media (min-width: 600px) {
+      .concept-compare {
+        flex-direction: row;
+        align-items: stretch;
+      }
+    }
+
+    .concept-box {
+      flex: 1;
+      padding: 1.5rem;
+      border: 1px solid var(--line-color);
+      background: var(--bg-color);
+      border-radius: 8px;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Bootstrap Color (Purple) */
+    .concept-box.bootstrap {
+      border-top: 4px solid #7952b3;
+    }
+    .concept-box.bootstrap .icon { color: #7952b3; }
+
+    /* API Color (Green) */
+    .concept-box.api {
+      border-top: 4px solid #2e7d32;
+    }
+    .concept-box.api .icon { color: #2e7d32; }
+
+    .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .concept-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .concept-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* 共通思想ボックス */
+    .philosophy-box {
+      background: var(--code-bg);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-radius: 4px;
+      text-align: center;
+      position: relative;
+      border: 2px dashed var(--text-sub);
+    }
+
+    .philosophy-box::before {
+      content: "共通する思想";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-sub);
+      color: #fff;
+      padding: 0 1rem;
+      font-size: 0.85rem;
+      border-radius: 20px;
+    }
+
+    .keyword-list {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .keyword-tag {
+      background: #fff;
+      border: 1px solid var(--line-color);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    /* 比較テーブル */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .diff-table th, .diff-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .diff-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 20%;
+    }
+
+    /* 抽象化の階段図 */
+    .evolution-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 2rem 0;
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .step-item {
+      background: var(--bg-color);
+      border: 1px solid var(--text-main);
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      font-weight: bold;
+    }
+
+    .step-arrow {
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 1.2rem;
+      margin: -0.3rem 0;
+    }
+
+    .role-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 0.5rem;
+      font-weight: normal;
+      background: var(--code-bg);
+      color: var(--text-sub);
+    }
+
+    .step-highlight {
+      background: #e3f2fd;
+      border-color: #1976d2;
+      color: #0d47a1;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">2026.01.28 / 開発思考・技術</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">APIとBootstrapの共通点と違い：技術は違うが「思想」は同じ</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#Bootstrap</li>
+            <li>#API</li>
+            <li>#Web開発</li>
+            <li>#再利用</li>
+            <li>#抽象化</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>Web開発において、「Bootstrap（CSSフレームワーク）」と「API（アプリケーション・プログラミング・インターフェース）」は頻繁に使われる技術です。</p>
+        <p>片や「デザインを整えるもの」、片や「機能を呼び出すもの」と、役割は全く異なりますが、実は<strong>「エンジニアが楽をするための思想（哲学）」</strong>は驚くほど似ています。</p>
+
+        <h2>1. 結論：借りている「レイヤー」が違うだけ</h2>
+        <p>両者の違いを一言で言えば、<strong>「見た目を借りるか、頭脳を借りるか」</strong>の違いです。</p>
+
+        <div class="concept-compare">
+            <div class="concept-box bootstrap">
+                <span class="icon">🎨</span>
+                <span class="concept-title">Bootstrap</span>
+                <p class="concept-desc">
+                    <strong>「見た目・UI」</strong>を外部の部品として借りる。<br>
+                    <small>設計図とレゴブロックのセット。</small>
+                </p>
+            </div>
+            
+            <div class="concept-box api">
+                <span class="icon">🧠</span>
+                <span class="concept-title">API</span>
+                <p class="concept-desc">
+                    <strong>「処理・機能」</strong>を外部サービスとして借りる。<br>
+                    <small>外部にある“働いてくれる頭脳”。</small>
+                </p>
+            </div>
+        </div>
+
+        <h2>2. 技術的な違いの整理</h2>
+        <p>「何を」「どこで」動かしているのか、技術的な観点で比較してみましょう。</p>
+
+        <table class="diff-table">
+            <thead>
+                <tr>
+                    <th>観点</th>
+                    <th>Bootstrap</th>
+                    <th>API</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>借りるもの</strong></td>
+                    <td>UIパーツ、レイアウト</td>
+                    <td>機能、データ、計算力</td>
+                </tr>
+                <tr>
+                    <td><strong>実行場所</strong></td>
+                    <td>ブラウザ（クライアント側）</td>
+                    <td>サーバ（外部システム側）</td>
+                </tr>
+                <tr>
+                    <td><strong>通信</strong></td>
+                    <td>基本なし<br><small>（最初のダウンロードのみ）</small></td>
+                    <td>あり<br><small>（都度リクエスト/レスポンス）</small></td>
+                </tr>
+                <tr>
+                    <td><strong>状態</strong></td>
+                    <td>静的（デザイン）</td>
+                    <td>動的（処理）</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. 共通する「思想」とは？</h2>
+        <p>技術的には別物ですが、なぜこれらがセットで語られることが多いのか。それは、どちらも<strong>「車輪の再発明を避ける（Reinventing the wheel）」</strong>ためのツールだからです。</p>
+
+        <div class="philosophy-box">
+            <p style="font-weight:bold; margin-bottom:1rem;">「自分で全部作らない」という戦略</p>
+            <p style="font-size:0.9rem; line-height:1.8;">
+                ボタンのデザインを1からCSSで書くのも、<br>
+                住所検索のロジックを1からDBで作るのも、<br>
+                本来の目的（サービス作り）からすれば「手段」に過ぎません。<br>
+                そこをショートカットするのが両者の共通点です。
+            </p>
+            <div class="keyword-list">
+                <span class="keyword-tag">再利用</span>
+                <span class="keyword-tag">分業</span>
+                <span class="keyword-tag">標準化</span>
+                <span class="keyword-tag">抽象化</span>
+            </div>
+        </div>
+
+        <h2>4. 開発における「抽象化の階段」</h2>
+        <p>開発スキルが上がるということは、コードをたくさん書くことではなく、<strong>「書かずに済む方法（抽象化）」</strong>を覚えるプロセスとも言えます。</p>
+
+        <div class="evolution-steps">
+            <div class="step-item">
+                Lv 1. 自前で全部作る
+                <span class="role-badge">フルスクラッチ</span>
+            </div>
+            <div class="step-arrow">⬇</div>
+            <div class="step-item step-highlight">
+                Lv 2. ライブラリを使う
+                <span class="role-badge">Bootstrapなど</span>
+            </div>
+            <div class="step-arrow">⬇</div>
+            <div class="step-item step-highlight">
+                Lv 3. APIを使う
+                <span class="role-badge">外部機能</span>
+            </div>
+            <div class="step-arrow">⬇</div>
+            <div class="step-item">
+                Lv 4. サービスを組み合わせる
+                <span class="role-badge">NoCode / SaaS連携</span>
+            </div>
+        </div>
+
+        <p>下に行くほど、自分で行う作業は「作成」から「判断・組み合わせ」へとシフトしていきます。</p>
+
+        <h2>まとめ</h2>
+        <p>BootstrapもAPIも、あなたが「コアとなる価値」に集中するための強力な武器です。</p>
+        <ul>
+            <li><strong>Bootstrap</strong> ≒ デザイン作業のアウトソーシング</li>
+            <li><strong>API</strong> ≒ 機能開発のアウトソーシング</li>
+        </ul>
+        <p>「これは自分で作るべきか？それとも借りるべきか？」という視点を持つことが、モダンな開発者の第一歩となります。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

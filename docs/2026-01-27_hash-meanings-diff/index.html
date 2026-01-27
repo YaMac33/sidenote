@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ハッシュの意味の違い：IT用語、SNS、食べ物の「ハッシュ」は何が違う？ - Sidenote</title>
+  <meta name="description" content="ITパスポート試験に出る「ハッシュ値」と、SNSの「ハッシュタグ」、食べ物の「ハッシュドポテト」。同じ言葉でも全く違う3つの意味と、意外な共通点（語源）を図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ハッシュの意味の違い：IT用語、SNS、食べ物の「ハッシュ」は何が違う？" />
+  <meta property="og:description" content="データを刻むか、記号を使うか、ポテトを刻むか。3つのハッシュを完全解剖。" />
+  <meta property="og:url" content="https://example.com/articles/hash-meanings-diff.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 3つのハッシュ比較カード */
+    .hash-comparison {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .hash-card {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-bottom: 2px solid;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hash-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* IT Hash */
+    .type-it { border-color: #1976d2; }
+    .type-it .card-header { background: #e3f2fd; color: #0d47a1; }
+    
+    /* SNS Hash */
+    .type-sns { border-color: #e91e63; }
+    .type-sns .card-header { background: #fce4ec; color: #880e4f; }
+
+    /* Food Hash */
+    .type-food { border-color: #fbc02d; }
+    .type-food .card-header { background: #fffde7; color: #f57f17; }
+
+    /* ハッシュ関数のメタファー図 */
+    .hash-process {
+      margin: 2rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .process-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 600px;
+      justify-content: center;
+    }
+    @media (max-width: 600px) {
+      .process-row { flex-direction: column; }
+      .process-arrow { transform: rotate(90deg); }
+    }
+
+    .data-box {
+      border: 1px solid var(--text-sub);
+      padding: 1rem;
+      background: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      width: 120px;
+      text-align: center;
+      position: relative;
+    }
+    .data-box::before {
+      content: "入力データ";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--code-bg);
+      padding: 0 5px;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+    }
+
+    .grinder-box {
+      width: 100px;
+      height: 100px;
+      background: var(--text-main);
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .hash-value {
+      border: 2px solid #1976d2;
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      word-break: break-all;
+      max-width: 200px;
+      text-align: center;
+      position: relative;
+    }
+    .hash-value::before {
+      content: "ハッシュ値";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e3f2fd;
+      padding: 0 5px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #1976d2;
+    }
+
+    .process-arrow {
+      font-size: 1.5rem;
+      color: var(--text-sub);
+    }
+
+    /* 比較テーブル */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .summary-table th, .summary-table td {
+      border: 1px solid var(--line-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    .summary-table th {
+      background: var(--code-bg);
+      font-weight: bold;
+      width: 20%;
+    }
+
+    /* 語源解説ボックス */
+    .origin-box {
+      background: #fff3e0;
+      border-left: 5px solid #ff9800;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .origin-title {
+      font-weight: bold;
+      color: #e65100;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-27">2026.01.27 / IT用語解説</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ハッシュの意味の違い：IT用語、SNS、食べ物の「ハッシュ」は何が違う？</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#ハッシュ</li>
+            <li>#IT用語</li>
+            <li>#SNS</li>
+            <li>#ハッシュタグ</li>
+            <li>#雑学</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ITパスポートの勉強をしていると「ハッシュ値」という言葉が出てきます。一方で、SNSでは「ハッシュタグ」を使い、朝食には「ハッシュドポテト」を食べます。</p>
+        <p>これらは同じ「ハッシュ（Hash）」という言葉を使っていますが、実は意味も由来も異なります。この記事では、3つのハッシュの違いと共通点を整理します。</p>
+
+        <h2>3つの「ハッシュ」を一目で比較</h2>
+        <p>まずはそれぞれの正体をざっくりと把握しましょう。</p>
+
+        <div class="hash-comparison">
+            <!-- 1. IT用語 -->
+            <div class="hash-card type-it">
+                <div class="card-header">IT用語</div>
+                <div class="card-body">
+                    <span class="hash-icon">🔐</span>
+                    <strong>ハッシュ値</strong>
+                    <p style="font-size:0.9rem; margin-top:0.5rem;">
+                        データをバラバラに刻んで、固定長の文字列に変換したもの。<br>
+                        <small>（改ざん検知・パスワード管理）</small>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. SNS -->
+            <div class="hash-card type-sns">
+                <div class="card-header">SNS</div>
+                <div class="card-body">
+                    <span class="hash-icon">#</span>
+                    <strong>ハッシュタグ</strong>
+                    <p style="font-size:0.9rem; margin-top:0.5rem;">
+                        記号の「#」をつけたキーワード。<br>
+                        <small>（検索・投稿の分類）</small>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. 食べ物 -->
+            <div class="hash-card type-food">
+                <div class="card-header">食べ物</div>
+                <div class="card-body">
+                    <span class="hash-icon">🍟</span>
+                    <strong>ハッシュドポテト</strong>
+                    <p style="font-size:0.9rem; margin-top:0.5rem;">
+                        細かく刻んだジャガイモを焼いた料理。<br>
+                        <small>（Hashed Potatoes）</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>1. IT用語の「ハッシュ値」とは？</h2>
+        <p>セキュリティ分野で重要なのがこのハッシュ値です。ここでの「Hash」は、英語の<strong>「細かく刻む、切り刻んで混ぜる」</strong>という意味から来ています。</p>
+        <p>元のデータ（肉）を、ハッシュ関数（ミンチ機）に通すと、ハッシュ値（挽き肉）が出てくるイメージです。</p>
+
+        <div class="hash-process">
+            <span style="font-weight:bold; color:var(--text-sub);">ハッシュ化のイメージ</span>
+            <div class="process-row">
+                <div class="data-box">
+                    ファイル<br>パスワード<br>画像 etc.
+                </div>
+                <div class="process-arrow">➡</div>
+                <div class="grinder-box">
+                    Hash<br>関数
+                </div>
+                <div class="process-arrow">➡</div>
+                <div class="hash-value">
+                    a1b2c3d4...<br>
+                    (固定長)
+                </div>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-sub); text-align:center;">
+                ※挽き肉から元のステーキ肉に戻せないのと同様、<br>ハッシュ値から元のデータを復元することはできません（不可逆性）。
+            </p>
+        </div>
+
+        <h2>2. SNSの「ハッシュタグ」とは？</h2>
+        <p>一方、InstagramやX（Twitter）で使う「#」は、IT用語の「刻む」とは由来が違います。</p>
+        <p>記号の「#」は、英語で「Hash sign」や「Pound sign」と呼ばれます。つまり、<strong>「記号の読み方がハッシュだった」</strong>というだけの話です。</p>
+        <ul>
+            <li><strong>スペル：</strong> Hash（記号の意味）</li>
+            <li><strong>機能：</strong> タグ付け、ラベリング</li>
+            <li><strong>ITとの関係：</strong> なし（暗号化などの機能はない）</li>
+        </ul>
+
+        <h2>3. 食べ物の「ハッシュドポテト」とは？</h2>
+        <p>こちらはIT用語と同じく、<strong>「細かく刻む（Hash）」</strong>が由来です。</p>
+        <p>正式には「Hashed Potatoes（刻まれたポテト）」です。ハヤシライス（Hashed beef rice）も同じく「刻んだ牛肉」が語源です。</p>
+
+        <div class="origin-box">
+            <span class="origin-title">💡 意外な共通点</span>
+            <p>IT用語の「ハッシュ値」と、食べ物の「ハッシュドポテト」は、根っこの意味が同じです。</p>
+            <p><strong>「原型がわからなくなるくらい細かく刻んで、新しい形にする」</strong></p>
+            <p>データなら要約値になり、ジャガイモならポテトフライになる。対象が違うだけで、やっていることは「刻む（Hash）」ことなのです。</p>
+        </div>
+
+        <h2>まとめ：違いの整理表</h2>
+        <p>最後に、3つのハッシュの違いを表で整理します。</p>
+
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>スペル</th>
+                    <th>語源・由来</th>
+                    <th>役割</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>ハッシュ値</strong><br><small>(IT)</small></td>
+                    <td>hash</td>
+                    <td><strong>細かく刻む</strong><br>(chopping)</td>
+                    <td>データの改ざん検知<br>パスワードの秘匿</td>
+                </tr>
+                <tr>
+                    <td><strong>ハッシュタグ</strong><br><small>(SNS)</small></td>
+                    <td>hash (#)</td>
+                    <td><strong>記号の名称</strong><br>(hash sign)</td>
+                    <td>投稿の分類<br>検索用ラベル</td>
+                </tr>
+                <tr>
+                    <td><strong>ハッシュドポテト</strong><br><small>(Food)</small></td>
+                    <td>hashed</td>
+                    <td><strong>細かく刻む</strong><br>(chopping)</td>
+                    <td>美味しい料理<br>（刻んだ芋）</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>ITパスポート試験で「ハッシュ」と出たら、ポテトやSNSのことは忘れて、<strong>「データを刻んで混ぜた、指紋のようなデータ」</strong>だと思い出してください。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
